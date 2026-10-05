@@ -20,8 +20,12 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
 
   useEffect(() => {
     fetchAPI<{ data: Profile }>("profile")
-      .then((res) => setProfile(wrapData(res)))
-      .catch(() => {});
+      .then((res) => {
+        const unwrapped = wrapData(res) as any;
+        const profileData = unwrapped?.data ? unwrapped.data : unwrapped;
+        setProfile(profileData);
+      })
+      .catch((err) => console.error("Gagal fetch profile:", err));
   }, []);
 
   return (
@@ -99,7 +103,7 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
         >
           <p className="text-lg text-gray-600 leading-relaxed">
             {profile?.bio ||
-              "I'm a Computer Science student from Indonesia with a deep interest in Data Analytics and Cloud Computing."}
+              "I'm a Computer Science student from Indonesia with a deep interest in Data Analytics and Web Development."}
           </p>
 
           <div className="w-12 h-px bg-gray-200 my-6" />

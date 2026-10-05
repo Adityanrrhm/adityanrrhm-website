@@ -47,7 +47,10 @@ export default function Skills() {
         {loading ? (
           <div className="animate-pulse flex gap-4 w-full px-12">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 w-28 rounded-full bg-gray-100 shrink-0" />
+              <div
+                key={i}
+                className="h-12 w-28 rounded-full bg-gray-100 shrink-0"
+              />
             ))}
           </div>
         ) : (
@@ -64,7 +67,14 @@ export default function Skills() {
                   className="flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-lg font-medium text-gray-800 flex-shrink-0 
                              bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-white/60 hover:scale-105 transition-all cursor-pointer"
                 >
-                  {Icon && <Icon className="w-5 h-5 md:w-6 md:h-6" style={skill.colorHex ? { color: skill.colorHex } : undefined} />}
+                  {Icon && (
+                    <Icon
+                      className="w-5 h-5 md:w-6 md:h-6"
+                      style={
+                        skill.colorHex ? { color: skill.colorHex } : undefined
+                      }
+                    />
+                  )}
                   {skill.name}
                 </span>
               );
@@ -86,7 +96,7 @@ export default function Skills() {
         </h2>
 
         <p className="text-lg md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto font-medium">
-          Focused on Data Analytics and Cloud Computing, building practical
+          Focused on Data Analytics and Web Development, building practical
           projects that support data-driven decision-making through modern
           technologies.
         </p>
