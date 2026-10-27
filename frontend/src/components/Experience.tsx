@@ -218,7 +218,7 @@ export default function Experience({
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="border-3 border-stroke bg-surface shadow-neo-xl max-w-4xl max-h-[90vh] p-4 relative overflow-hidden"
+              className="border-3 border-stroke bg-surface shadow-neo-xl w-full max-w-4xl max-h-[90vh] p-4 sm:p-6 relative overflow-hidden flex flex-col"
             >
               <button
                 onClick={() => setModalImage(null)}
@@ -228,15 +228,15 @@ export default function Experience({
                 <X className="w-5 h-5 stroke-[2.5]" />
               </button>
 
-              <div className="relative w-full h-[60vh] sm:h-[75vh] flex items-center justify-center pt-8">
-                <div className="relative w-full h-full border-2 border-stroke bg-neutral-soft">
-                  <Image
-                    src={modalImage}
-                    alt="Documentation"
-                    fill
-                    className="object-contain p-2"
-                  />
-                </div>
+              <div className="relative w-full h-[60vh] sm:h-[75vh] border-2 border-stroke bg-neutral-soft mt-8 overflow-hidden">
+                <Image
+                  src={modalImage}
+                  alt="Documentation"
+                  fill
+                  className="object-contain p-2"
+                  sizes="(max-width: 1024px) 100vw, 896px"
+                  priority
+                />
               </div>
             </motion.div>
           </motion.div>

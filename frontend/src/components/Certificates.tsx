@@ -293,7 +293,7 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
                 <X className="w-4 h-4 stroke-[2.5]" />
               </button>
 
-              <div className="flex-1 bg-neutral-soft border-b-3 border-stroke flex items-center justify-center p-6 min-h-0 overflow-hidden">
+              <div className="w-full h-[320px] sm:h-[400px] bg-neutral-soft border-b-3 border-stroke flex items-center justify-center p-6 relative overflow-hidden">
                 {modalCert.imageUrl ? (
                   <Img
                     src={modalCert.imageUrl}
