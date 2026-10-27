@@ -51,42 +51,44 @@ export default function CTA() {
   return (
     <section
       id="contact"
-      className="section-padding py-20 md:py-32 flex flex-col items-center justify-center text-center"
+      className="section-padding py-16 sm:py-24"
     >
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="max-w-4xl"
+        transition={{ duration: 0.5 }}
+        className="border-3 border-stroke bg-surface p-8 sm:p-12 md:p-16 shadow-neo-xl text-center max-w-4xl mx-auto relative"
       >
-        <h2 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6">
-          Let's <span className="text-gray-400">build something</span>
-          <br className="hidden sm:block" />
-          meaningful
+        <span className="badge-neo badge-neo-active mb-4">
+          GET IN TOUCH
+        </span>
+
+        <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stroke mb-4 leading-tight">
+          Let&apos;s <span className="bg-accent text-white px-3 py-0.5 inline-block -rotate-1 shadow-neo-sm">Build Something</span> Bold & Meaningful
         </h2>
 
-        <p className="text-base sm:text-lg text-gray-500 mb-8 md:mb-12 max-w-2xl mx-auto">
-          Looking to collaborate? Whether it's data, cloud, or product — let's
-          talk.
+        <p className="text-muted text-base sm:text-lg max-w-xl mx-auto mb-8 font-medium leading-relaxed">
+          Tertarik untuk berkolaborasi, mendiskusikan rekayasa data, arsitektur cloud, atau pengembangan produk web? Mari terhubung.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={handleCopy}
-            className="bg-[#111111] text-white px-8 py-4 rounded-full font-medium flex items-center gap-3 hover:opacity-90 transition-all active:scale-[0.97] w-full sm:w-auto justify-center"
+            className="btn-neo-primary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2.5"
           >
-            {copied ? "Copied!" : email}
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="w-4 h-4 stroke-[2.5]" /> : <Copy className="w-4 h-4 stroke-[2.5]" />}
+            <span>{copied ? "Email Tersalin!" : email}</span>
           </button>
 
           <a
             href={linkedIn}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-gray-200 px-8 py-4 rounded-full font-medium flex items-center gap-3 hover:bg-gray-50 transition-all active:scale-[0.97] cursor-pointer w-full sm:w-auto justify-center"
+            className="btn-neo-secondary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2.5"
           >
-            <ExternalLink className="w-4 h-4 text-gray-500" />
-            View on LinkedIn
+            <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+            <span>Lihat Profil LinkedIn</span>
           </a>
         </div>
       </motion.div>

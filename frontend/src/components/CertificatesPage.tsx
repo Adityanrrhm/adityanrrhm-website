@@ -8,7 +8,7 @@ import {
   animate,
   AnimatePresence,
 } from "framer-motion";
-import { ChevronLeft, ChevronRight, X, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, ArrowUpRight } from "lucide-react";
 import Img from "@/components/Img";
 import { fetchAPI, wrapData } from "@/lib/api";
 import { formatDate } from "@/lib/formatDate";
@@ -24,7 +24,7 @@ interface Certificate {
 }
 
 const CARD_W = 360;
-const GAP = 24;
+const GAP = 28;
 const STEP = CARD_W + GAP;
 
 const CertificateCard = memo(function CertificateCard({
@@ -44,14 +44,14 @@ const CertificateCard = memo(function CertificateCard({
 
   const cardScale = useTransform(dist, (d) => {
     if (d < 60) return 1;
-    if (d < STEP) return 1 - (1 - 0.85) * ((d - 60) / (STEP - 60));
-    return 0.85;
+    if (d < STEP) return 1 - (1 - 0.88) * ((d - 60) / (STEP - 60));
+    return 0.88;
   });
 
   const cardOpacity = useTransform(dist, (d) => {
     if (d < 80) return 1;
-    if (d < STEP * 1.2) return 0.7;
-    return 0;
+    if (d < STEP * 1.2) return 0.75;
+    return 0.15;
   });
 
   const cardZ = useTransform(dist, (d) => {
@@ -60,61 +60,58 @@ const CertificateCard = memo(function CertificateCard({
     return 1;
   });
 
-  const cardShadow = useTransform(dist, (d) => {
-    if (d < 60)
-      return "0 25px 60px rgba(0,0,0,0.10), 0 8px 20px rgba(0,0,0,0.06)";
-    if (d < STEP * 1.2) return "0 8px 24px rgba(0,0,0,0.06)";
-    return "none";
-  });
-
   return (
     <motion.div
       style={{
         scale: cardScale,
         opacity: cardOpacity,
         zIndex: cardZ,
-        boxShadow: cardShadow,
       }}
-      whileHover={{ y: -8 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ y: -6, transition: { duration: 0.15 } }}
       onClick={() => onSelect(cert)}
-      className="shrink-0 w-[360px] h-[460px] sm:h-[480px] rounded-2xl bg-zinc-100 p-3 cursor-pointer will-change-transform group hover:shadow-xl transition-shadow duration-300"
+      className="shrink-0 w-[320px] sm:w-[360px] h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col cursor-pointer select-none will-change-transform group"
     >
-      <div className="bg-white rounded-xl h-full flex flex-col overflow-hidden">
-        <div className="flex-1 p-4 pb-2 min-h-0">
-          <div className="rounded-lg h-full bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]">
-            {cert.imageUrl ? (
-              <Img src={cert.imageUrl} alt={cert.title} containerClassName="w-full h-full" imgClassName="w-full h-full object-contain" />
-            ) : (
-              <div className="text-center w-full px-6">
-                <div className="max-w-[200px] mx-auto aspect-[4/3] bg-white rounded border border-gray-100 shadow-xs flex flex-col items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-2">
-                    <span className="text-xs font-bold text-gray-400">{cert.org.charAt(0)}</span>
-                  </div>
-                  <p className="text-[11px] font-bold text-gray-700 text-center leading-tight px-3">{cert.title}</p>
-                  <div className="w-6 h-px bg-gray-200 my-1.5" />
-                  <p className="text-[9px] text-gray-400">{cert.org}</p>
-                </div>
-              </div>
-            )}
+      {/* Certificate Image Box */}
+      <div className="flex-1 bg-neutral-soft border-2 border-stroke relative overflow-hidden flex items-center justify-center p-3 mb-4">
+        {cert.imageUrl ? (
+          <Img
+            src={cert.imageUrl}
+            alt={cert.title}
+            containerClassName="w-full h-full"
+            imgClassName="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="text-center p-4">
+            <span className="font-heading font-black text-4xl text-stroke opacity-20 block mb-2">
+              {cert.org.charAt(0)}
+            </span>
+            <p className="font-heading font-black text-xs uppercase text-stroke line-clamp-2">
+              {cert.title}
+            </p>
           </div>
+        )}
+        <div className="absolute top-2 left-2">
+          <span className="badge-neo text-[10px] py-0.5 px-2">
+            {cert.category}
+          </span>
         </div>
-        <div className="px-4 pb-4 pt-2">
-          <p className="text-sm font-semibold text-gray-900 truncate">
-            {cert.org}
-          </p>
-          <p className="text-[13px] text-gray-500 truncate">
-            {cert.title}
-          </p>
-          <div className="flex items-center justify-between mt-2.5">
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600">
-              {cert.category}
-            </span>
-            <span className="text-[11px] text-gray-400">
-              {formatDate(cert.issuedDate)}
-            </span>
-          </div>
+      </div>
+
+      {/* Info Block */}
+      <div className="flex flex-col">
+        <h3 className="font-heading font-black text-sm sm:text-base uppercase tracking-tight text-stroke line-clamp-1 mb-1">
+          {cert.title}
+        </h3>
+        <p className="text-xs font-bold text-muted uppercase tracking-wider mb-1">
+          {cert.org}
+        </p>
+        <p className="text-[11px] text-muted font-medium mb-3">
+          {formatDate(cert.issuedDate)}
+        </p>
+
+        <div className="btn-neo-secondary text-xs py-1.5 px-3 text-center w-full flex items-center justify-center gap-1.5 mt-auto">
+          <span>Detail Sertifikat</span>
+          <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </div>
       </div>
     </motion.div>
@@ -128,6 +125,8 @@ function CertificateModal({
   cert: Certificate;
   onClose: () => void;
 }) {
+  const [zoomed, setZoomed] = useState(false);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -150,77 +149,93 @@ function CertificateModal({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 md:p-8"
     >
       <motion.div
-        initial={{ scale: 0.92, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.92, opacity: 0, y: 20 }}
-        transition={{ type: "spring", stiffness: 350, damping: 28 }}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl overflow-y-auto md:overflow-hidden shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row relative"
+        className="bg-surface border-3 border-stroke shadow-neo-xl w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row relative overflow-y-auto md:overflow-hidden"
       >
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/90 border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-all active:scale-[0.92] shadow-sm"
+          className="absolute top-4 right-4 z-30 p-2 border-2 border-stroke bg-surface shadow-neo-sm hover:shadow-neo active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-stroke"
+          aria-label="Close modal"
         >
-          <X className="w-4 h-4 text-gray-500" />
+          <X className="w-5 h-5 stroke-[2.5]" />
         </button>
 
-        <div className="md:w-1/2 bg-gradient-to-br from-gray-50 to-gray-100 p-0 md:p-0 flex items-center justify-center h-[40vh] min-h-[220px] md:h-auto md:min-h-[400px] overflow-hidden">
+        {/* Modal Left Preview */}
+        <div className="md:w-[58%] border-b-3 md:border-b-0 md:border-r-3 border-stroke bg-neutral-soft flex items-center justify-center min-h-[260px] md:min-h-[420px] p-6 relative overflow-hidden">
           {cert.imageUrl ? (
-            <Img src={cert.imageUrl} alt={cert.title} containerClassName="w-full h-full" imgClassName="w-full h-full object-contain" />
+            <Img
+              src={cert.imageUrl}
+              alt={cert.title}
+              containerClassName="w-full h-full"
+              imgClassName={`w-full h-full object-contain transition-transform duration-200 ${
+                zoomed ? "scale-125" : "scale-100"
+              }`}
+            />
           ) : (
-            <div className="w-full p-6 md:p-8">
-              <div className="w-full max-w-sm mx-auto">
-                <div className="aspect-[4/3] bg-white rounded-xl shadow-md flex items-center justify-center">
-                  <div className="text-center p-6 w-full">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-sm font-bold text-gray-400">{cert.org.charAt(0)}</span>
-                    </div>
-                    <h3 className="text-base font-bold text-gray-800">{cert.title}</h3>
-                    <div className="w-10 h-px bg-gray-200 mx-auto my-3" />
-                    <p className="text-sm text-gray-500">{cert.org}</p>
-                    <p className="text-xs text-gray-400 mt-2">{formatDate(cert.issuedDate)}</p>
-                  </div>
-                </div>
-              </div>
+            <div className="text-center p-6">
+              <span className="font-heading font-black text-6xl text-stroke opacity-20 block mb-3">
+                {cert.org.charAt(0)}
+              </span>
+              <p className="font-heading font-black text-lg uppercase text-stroke">
+                {cert.title}
+              </p>
+              <p className="text-xs font-bold text-muted uppercase mt-1">{cert.org}</p>
             </div>
           )}
         </div>
 
-        <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center overflow-y-auto">
+        {/* Modal Right Info */}
+        <div className="md:w-[42%] p-6 md:p-8 flex flex-col justify-between overflow-y-auto bg-surface">
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
-              {cert.org}
-            </p>
-            <h2 className="font-heading text-xl md:text-2xl font-bold text-gray-900 mb-3">
+            <div className="mb-2">
+              <span className="badge-neo text-xs">{cert.category}</span>
+            </div>
+            <h2 className="font-heading font-black text-2xl md:text-3xl uppercase tracking-tight text-stroke mb-2">
               {cert.title}
             </h2>
+            <p className="font-heading font-bold text-sm text-accent uppercase tracking-wider mb-6">
+              {cert.org}
+            </p>
 
-            <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-600 mb-6">
-              {cert.category}
-            </span>
-
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider">
-                  Issued
+            <div className="space-y-4 mb-6">
+              <div className="p-3 border-2 border-stroke bg-neutral-soft">
+                <p className="font-heading font-bold text-[10px] uppercase tracking-wider text-muted">
+                  Tanggal Terbit:
                 </p>
-                <p className="text-sm text-gray-800 font-medium">
+                <p className="font-heading font-bold text-xs uppercase text-stroke mt-0.5">
                   {formatDate(cert.issuedDate)}
                 </p>
               </div>
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider">
-                  Description
-                </p>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {cert.description}
-                </p>
-              </div>
-            </div>
 
+              {cert.description && (
+                <div>
+                  <p className="font-heading font-bold text-xs uppercase tracking-wider text-stroke mb-1.5">
+                    Deskripsi:
+                  </p>
+                  <p className="text-muted text-sm leading-relaxed font-medium">
+                    {cert.description}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-4 border-t-2 border-neutral-soft flex items-center justify-between">
+            <button
+              onClick={() => setZoomed(!zoomed)}
+              className="btn-neo-secondary text-xs py-2 px-4 flex items-center gap-1.5"
+            >
+              <ZoomIn className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>{zoomed ? "Reset Tampilan" : "Perbesar Gambar"}</span>
+            </button>
           </div>
         </div>
       </motion.div>
@@ -247,7 +262,7 @@ export default function CertificatesPage() {
 
   const categories = [
     "All",
-    ...new Set(certificates.map((c) => c.category)),
+    ...new Set(certificates.map((c) => c.category).filter(Boolean)),
   ] as string[];
 
   const filtered =
@@ -255,7 +270,7 @@ export default function CertificatesPage() {
       ? certificates
       : certificates.filter((c) => c.category === activeCategory);
 
-  const maxIdx = filtered.length - 1;
+  const maxIdx = Math.max(0, filtered.length - 1);
 
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat);
@@ -277,9 +292,8 @@ export default function CertificatesPage() {
     [maxIdx, carouselX],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragEnd = useCallback(
-    (_: any, info: { offset: { x: number }; velocity: { x: number } }) => {
+    (_: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number }; velocity: { x: number } }) => {
       const current = carouselX.get();
       const rawIdx = Math.round(-current / STEP);
       const clampedIdx = Math.max(0, Math.min(rawIdx, maxIdx));
@@ -298,18 +312,16 @@ export default function CertificatesPage() {
 
   if (loading) {
     return (
-      <section className="section-padding py-20">
+      <section className="section-padding py-16">
         <div className="animate-pulse space-y-6">
-          <div className="h-4 w-24 bg-gray-200 rounded" />
-          <div className="h-10 w-48 bg-gray-200 rounded" />
+          <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
+          <div className="h-12 w-64 border-3 border-stroke bg-neutral-soft" />
           <div className="flex gap-6 mt-10 overflow-hidden">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="shrink-0 w-[360px] h-[480px] rounded-2xl bg-zinc-100 p-3"
-              >
-                <div className="bg-white rounded-xl h-full" />
-              </div>
+                className="shrink-0 w-[360px] h-[480px] border-3 border-stroke bg-neutral-soft shadow-neo-lg"
+              />
             ))}
           </div>
         </div>
@@ -318,20 +330,25 @@ export default function CertificatesPage() {
   }
 
   return (
-    <section className="section-padding py-20 overflow-hidden">
+    <section className="section-padding py-12 sm:py-16 overflow-hidden">
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
-        className="mb-2"
+        className="mb-8"
       >
-        <h2 className="font-heading text-4xl md:text-5xl font-bold">Certificates.</h2>
-        <p className="text-gray-400 mt-2">
-          Certificates that prove the grind.
+        <span className="badge-neo mb-3">CREDENTIALS ARCHIVE</span>
+        <h1 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stroke">
+          All Certificates<span className="text-accent">.</span>
+        </h1>
+        <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
+          Dokumentasi sertifikasi keahlian profesional dalam bidang data analytics, cloud, dan pengembangan sistem.
         </p>
       </motion.div>
 
-      <div className="flex flex-wrap gap-2 mb-12 mt-8">
+      {/* Categories */}
+      <div className="flex flex-wrap gap-2.5 mb-10 mt-6">
         {categories.map((cat) => {
           const count =
             cat === "All"
@@ -342,20 +359,19 @@ export default function CertificatesPage() {
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
-              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all active:scale-[0.97] ${
-                isActive
-                  ? "bg-black text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              className={`badge-neo cursor-pointer transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+                isActive ? "badge-neo-active shadow-neo" : "bg-surface hover:bg-neutral-soft"
               }`}
             >
-              {cat}{" "}
-              <span className="opacity-60">({count})</span>
+              <span>{cat}</span>
+              <span className="ml-1.5 opacity-75">({count})</span>
             </button>
           );
         })}
       </div>
 
-      <div className="relative select-none">
+      {/* Carousel */}
+      <div className="relative select-none py-4">
         <motion.div
           className="flex items-center"
           drag="x"
@@ -380,25 +396,25 @@ export default function CertificatesPage() {
         </motion.div>
       </div>
 
-      <div className="flex justify-center items-center gap-6 mt-10">
+      {/* Navigation Controls */}
+      <div className="flex justify-center items-center gap-6 mt-8">
         <button
           onClick={() => goTo(index - 1)}
           disabled={index === 0}
-          className="w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+          className="w-11 h-11 border-3 border-stroke bg-surface shadow-neo hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           aria-label="Previous certificate"
         >
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
+          <ChevronLeft className="w-5 h-5 text-stroke stroke-[2.5]" />
         </button>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {filtered.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
-              className={`rounded-full transition-all duration-500 ease-out active:scale-75 ${
-                i === index ? "bg-gray-800" : "bg-gray-300 hover:bg-gray-400"
+              className={`border border-stroke transition-all duration-200 cursor-pointer ${
+                i === index ? "bg-accent w-8 h-3 shadow-neo-sm" : "bg-neutral-soft w-3 h-3 hover:bg-surface"
               }`}
-              style={{ width: i === index ? 32 : 10, height: 6 }}
               aria-label={`Go to certificate ${i + 1}`}
             />
           ))}
@@ -407,13 +423,14 @@ export default function CertificatesPage() {
         <button
           onClick={() => goTo(index + 1)}
           disabled={index === maxIdx}
-          className="w-11 h-11 rounded-full border border-gray-200 bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+          className="w-11 h-11 border-3 border-stroke bg-surface shadow-neo hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           aria-label="Next certificate"
         >
-          <ChevronRight className="w-4 h-4 text-gray-600" />
+          <ChevronRight className="w-5 h-5 text-stroke stroke-[2.5]" />
         </button>
       </div>
 
+      {/* Modal */}
       <AnimatePresence>
         {selectedCert && (
           <CertificateModal

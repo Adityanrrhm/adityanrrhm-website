@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Download, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAPI, wrapData } from "@/lib/api";
@@ -12,7 +13,6 @@ interface Profile {
 }
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -22,132 +22,116 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 flex flex-col items-center justify-center transition-all duration-500 ${
-        isScrolled ? "py-0" : "py-4"
-      }`}
-    >
-      <motion.div
-        layout
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 25,
-          mass: 0.8,
-        }}
-        className={`bg-background/80 backdrop-blur-md border-card-border flex items-center justify-between shadow-sm relative z-50 ${
-          isScrolled
-              ? "w-full max-w-none rounded-none border-b px-8 py-4"
-              : "w-[calc(100%-3rem)] max-w-5xl mx-auto rounded-full border px-6 py-3"
-        }`}
-      >
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight group">
-          <img 
-            src="/assets/logo_web_Adityanrrhm.png" 
-            alt="Logo" 
-            className="h-6 w-auto object-contain transition-transform group-hover:scale-105" 
-          />
-          <span className="text-gray-900">{profile?.name || "Aditya Nur Rohim"}</span>
+    <header className="sticky top-0 z-50 w-full bg-surface border-b-3 border-stroke">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between h-18 sm:h-20">
+        {/* Brand Logo & Name */}
+        <Link href="/" className="flex items-center gap-3 group select-none">
+          <div className="w-9 h-9 border-2 border-stroke bg-surface flex items-center justify-center p-1 shadow-neo-sm group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-neo transition-all relative">
+            <Image 
+              src="/assets/logo_web_Adityanrrhm.png" 
+              alt="Logo" 
+              width={28}
+              height={28}
+              className="h-full w-auto object-contain" 
+            />
+          </div>
+          <span className="font-heading font-black text-lg sm:text-xl md:text-2xl tracking-tighter uppercase text-stroke">
+            {profile?.name ? profile.name : "PORTFOLIO"}
+            <span className="text-accent">.</span>
+          </span>
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-muted">
-          <Link href="/project" className="hover:text-foreground transition-colors">
-            Project
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8 font-heading font-bold uppercase text-xs lg:text-sm tracking-wider text-stroke">
+          <Link href="/project" className="hover:text-accent hover:underline decoration-2 transition-colors py-1">
+            Projects
           </Link>
-          <Link href="/certificate" className="hover:text-foreground transition-colors">
-            Certificate
+          <Link href="/certificate" className="hover:text-accent hover:underline decoration-2 transition-colors py-1">
+            Certificates
           </Link>
-          <Link href="/experience" className="hover:text-foreground transition-colors">
+          <Link href="/experience" className="hover:text-accent hover:underline decoration-2 transition-colors py-1">
             Experience
           </Link>
-          <Link href="/about" className="hover:text-foreground transition-colors">
+          <Link href="/about" className="hover:text-accent hover:underline decoration-2 transition-colors py-1">
             About
           </Link>
+        </nav>
+
+        {/* Desktop Download CV Button */}
+        <div className="hidden md:flex items-center">
+          <a
+            href={profile?.cvUrl || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-neo-primary text-xs py-2.5 px-5 flex items-center gap-2"
+          >
+            <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Download CV</span>
+          </a>
         </div>
 
-        {/* Desktop Download CV */}
-        <a
-          href={profile?.cvUrl || "#"}
-          className="hidden md:flex bg-accent text-accent-foreground px-5 py-2.5 rounded-full text-sm font-medium items-center gap-2 hover:opacity-90 transition-all active:scale-[0.97] cursor-pointer"
-        >
-          <Download className="w-4 h-4" />
-          Download CV
-        </a>
-
-        {/* Hamburger Menu Button (Mobile) */}
+        {/* Mobile Hamburger Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="flex md:hidden p-1.5 text-gray-600 hover:text-gray-900 focus:outline-none transition-colors"
+          className="flex md:hidden p-2 border-2 border-stroke bg-surface shadow-neo-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-stroke"
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? <X className="w-6 h-6 stroke-[2.5]" /> : <Menu className="w-6 h-6 stroke-[2.5]" />}
         </button>
-      </motion.div>
+      </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -20, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className={`w-[calc(100%-3rem)] max-w-5xl bg-white/95 backdrop-blur-lg border border-gray-100 shadow-xl mt-2 px-6 py-5 flex flex-col gap-4 md:hidden z-40 overflow-hidden ${
-              isScrolled ? "rounded-2xl" : "rounded-3xl"
-            }`}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="border-t-3 border-stroke bg-surface px-6 py-6 flex flex-col gap-4 md:hidden shadow-neo-xl overflow-hidden"
           >
             <Link
               href="/project"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-gray-600 hover:text-gray-900 font-medium py-1.5 text-sm border-b border-gray-50 transition-colors"
+              className="font-heading font-bold uppercase text-sm tracking-wider text-stroke py-2 border-b-2 border-neutral-soft hover:text-accent transition-colors"
             >
-              Project
+              Projects
             </Link>
             <Link
               href="/certificate"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-gray-600 hover:text-gray-900 font-medium py-1.5 text-sm border-b border-gray-50 transition-colors"
+              className="font-heading font-bold uppercase text-sm tracking-wider text-stroke py-2 border-b-2 border-neutral-soft hover:text-accent transition-colors"
             >
-              Certificate
+              Certificates
             </Link>
             <Link
               href="/experience"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-gray-600 hover:text-gray-900 font-medium py-1.5 text-sm border-b border-gray-50 transition-colors"
+              className="font-heading font-bold uppercase text-sm tracking-wider text-stroke py-2 border-b-2 border-neutral-soft hover:text-accent transition-colors"
             >
               Experience
             </Link>
             <Link
               href="/about"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-gray-600 hover:text-gray-900 font-medium py-1.5 text-sm border-b border-gray-50 transition-colors"
+              className="font-heading font-bold uppercase text-sm tracking-wider text-stroke py-2 border-b-2 border-neutral-soft hover:text-accent transition-colors"
             >
               About
             </Link>
             <a
               href={profile?.cvUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="bg-accent text-accent-foreground px-5 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-[0.97] mt-2 cursor-pointer w-full text-center"
+              className="btn-neo-primary w-full text-center text-xs py-3 mt-2 flex items-center justify-center gap-2"
             >
-              <Download className="w-4 h-4" />
-              Download CV
+              <Download className="w-4 h-4 stroke-[2.5]" />
+              <span>Download CV</span>
             </a>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   );
 }

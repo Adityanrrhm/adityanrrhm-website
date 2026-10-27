@@ -1,26 +1,28 @@
 @import "tailwindcss";
 
-:root {
-  --background: #FCFCFC;
-  --foreground: #111111;
-  --card-bg: #FFFFFF;
-  --card-border: #E5E7EB;
-  --accent-color: #000000;
-  --accent-foreground: #FFFFFF;
-  --muted: #6B7280;
-}
+@theme {
+  --color-canvas: #F8F8F6;
+  --color-surface: #FFFFFF;
+  --color-neutral-soft: #E5E5E1;
+  --color-stroke: #000000;
+  --color-accent: #0052FF;
+  --color-accent-foreground: #FFFFFF;
+  --color-muted: #4A4A4A;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card-bg: var(--card-bg);
-  --color-card-border: var(--card-border);
-  --color-accent: var(--accent-color);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
-  
-  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --color-background: #F8F8F6;
+  --color-foreground: #000000;
+  --color-card-bg: #FFFFFF;
+  --color-card-border: #000000;
+
+  --shadow-neo-sm: 2px 2px 0px #000000;
+  --shadow-neo: 4px 4px 0px #000000;
+  --shadow-neo-lg: 6px 6px 0px #000000;
+  --shadow-neo-xl: 8px 8px 0px #000000;
+
+  --border-width-3: 3px;
+
+  --font-body: var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: var(--font-heading), "Space Grotesk", sans-serif;
   --font-handwritten: var(--font-caveat), cursive;
   --animate-shimmer: shimmer 2s infinite ease-in-out;
 }
@@ -30,10 +32,9 @@
   100% { transform: translateX(100%); }
 }
 
-
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-canvas);
+  color: var(--color-stroke);
   font-family: var(--font-body);
 }
 
@@ -41,11 +42,122 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
+/* Custom Neo-Brutalisme components */
+@layer components {
+  /* Tombol Utama (Electric Blue CTA) */
+  .btn-neo-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 3px solid var(--color-stroke);
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 100ms ease;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+  }
+  .btn-neo-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #000000;
+  }
+  .btn-neo-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+  }
+
+  /* Tombol Sekunder (Monochrome) */
+  .btn-neo-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-surface);
+    color: var(--color-stroke);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 3px solid var(--color-stroke);
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 100ms ease;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+  }
+  .btn-neo-secondary:hover {
+    background-color: var(--color-neutral-soft);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #000000;
+  }
+  .btn-neo-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+  }
+
+  /* Kartu Portofolio Neo-Brutalisme */
+  .card-neo {
+    background-color: var(--color-surface);
+    border: 3px solid var(--color-stroke);
+    box-shadow: 6px 6px 0px #000000;
+    padding: 1.5rem;
+    transition: all 150ms ease;
+  }
+  .card-neo:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px #000000;
+  }
+
+  /* Badge Neo-Brutalisme */
+  .badge-neo {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--color-neutral-soft);
+    color: var(--color-stroke);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    border: 2px solid var(--color-stroke);
+    padding: 0.375rem 0.75rem;
+    user-select: none;
+    box-shadow: 2px 2px 0px #000000;
+  }
+
+  .badge-neo-active {
+    background-color: var(--color-accent) !important;
+    color: #ffffff !important;
+  }
+}
+
 /* Custom utilities */
 @layer utilities {
-
-
   .section-padding {
-    @apply py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-left: 6rem;
+      padding-right: 6rem;
+    }
   }
 }

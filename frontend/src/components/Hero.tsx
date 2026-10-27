@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { fetchAPI, wrapData } from "@/lib/api";
 
 interface Profile {
@@ -10,12 +12,12 @@ interface Profile {
   title: string;
   bio: string;
   photoUrl: string | null;
+  cvUrl?: string | null;
 }
 
 export default function Hero() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     fetchAPI<{ data: Profile }>("profile")
@@ -24,77 +26,102 @@ export default function Hero() {
       .finally(() => setLoading(false));
   }, []);
 
+  const nameParts = (profile?.name || "Aditya Nur Rohim").split(" ");
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(" ");
+
   return (
-    <section className="min-h-[90vh] flex items-center justify-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 md:px-12 lg:px-24 overflow-hidden">
-      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 md:gap-8 lg:gap-12 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="lg:col-span-5 flex justify-center lg:justify-end"
-        >
-          <motion.div
-            initial={{ rotate: -8 }}
-            animate={{ rotate: -8 }}
-            whileHover={{
-              rotate: 0,
-              scale: 1.05,
-              y: -11,
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-            }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="w-[220px] h-[300px] sm:w-[260px] sm:h-[340px] md:w-[300px] md:h-[400px] lg:w-[340px] lg:h-[440px] bg-white rounded-3xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.2)] border-[6px] sm:border-[8px] border-white relative overflow-hidden flex items-end cursor-pointer group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200/50" />
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="border-3 border-stroke bg-surface p-6 sm:p-10 md:p-14 shadow-neo-xl relative"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Text & CTA */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
+            {/* Status Badge */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="badge-neo badge-neo-active inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Available for Hire</span>
+              </span>
+              {profile?.title && (
+                <span className="badge-neo hidden sm:inline-flex">
+                  {profile.title}
+                </span>
+              )}
+            </div>
 
-            {loading ? (
-              <div className="absolute inset-0 z-10 overflow-hidden bg-gray-200">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
+            <p className="font-handwritten text-2xl sm:text-3xl text-muted rotate-[-2deg] mb-1">
+              hi, i&apos;m
+            </p>
+
+            {/* Headline */}
+            <h1 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase leading-[1.08] tracking-tight mb-6 text-stroke">
+              {firstName}{" "}
+              <span className="bg-accent text-white px-2.5 py-0.5 inline-block -rotate-1 shadow-neo-sm">
+                {restName || "DEVELOPER"}
+              </span>
+            </h1>
+
+            {/* Bio */}
+            <p className="text-muted text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl mb-8">
+              {profile?.bio ||
+                "Membangun aplikasi web berperforma tinggi dan analitik data dengan tampilan yang berani, bersih, dan fungsional."}
+            </p>
+
+            {/* Buttons */}
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+              <a href="#portfolio" className="btn-neo-primary w-full sm:w-auto gap-2">
+                <span>Lihat Karya</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </a>
+              <Link href="/about" className="btn-neo-secondary w-full sm:w-auto">
+                Tentang Saya
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Column: Hero Photo Box */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <div className="relative group">
+              <div className="w-[240px] sm:w-[280px] md:w-[320px] aspect-[4/5] border-3 border-stroke bg-neutral-soft shadow-neo-xl relative overflow-hidden flex items-end">
+                {loading ? (
+                  <div className="absolute inset-0 bg-neutral-soft animate-pulse flex items-center justify-center">
+                    <div className="w-12 h-12 border-3 border-stroke border-t-accent animate-spin" />
+                  </div>
+                ) : profile?.photoUrl ? (
+                  <Image
+                    src={profile.photoUrl}
+                    alt={profile.name || "Aditya Nur Rohim"}
+                    fill
+                    priority
+                    className="object-cover object-bottom transition-all duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-neutral-soft">
+                    <span className="font-heading font-black text-6xl text-stroke opacity-15">
+                      ANR
+                    </span>
+                  </div>
+                )}
+
+                {/* Neo Card Label on bottom */}
+                <div className="absolute bottom-3 left-3 right-3 bg-surface border-2 border-stroke p-3 shadow-neo-sm z-10">
+                  <p className="font-heading font-black text-xs uppercase tracking-wider text-stroke truncate">
+                    {profile?.name || "Aditya Nur Rohim"}
+                  </p>
+                  <p className="text-[11px] text-muted font-bold uppercase truncate">
+                    {profile?.title || "Data Analytics & Web Developer"}
+                  </p>
+                </div>
               </div>
-            ) : profile?.photoUrl ? (
-              <Image
-                src={profile.photoUrl}
-                alt={profile.name || "Aditya Nur Rohim"}
-                fill
-                priority
-                className={`object-cover object-bottom z-10 transition-all duration-500 group-hover:scale-110 ${
-                  imageLoaded ? "opacity-100 scale-105" : "opacity-0 scale-100"
-                }`}
-                onLoad={() => setImageLoaded(true)}
-              />
-            ) : (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100">
-                <svg
-                  className="w-24 h-24 text-gray-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              </div>
-            )}
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left lg:pl-8"
-        >
-          <p className="font-handwritten text-2xl sm:text-4xl md:text-5xl lg:text-7xl text-gray-500 tracking-wide rotate-[-3deg] inline-block mb-2 sm:mb-3">
-            hi, i&apos;m
-          </p>
-          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[7.5rem] font-bold tracking-tighter leading-[1.05] md:leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 mb-6 sm:mb-8">
-            {profile?.name || "Aditya Nur Rohim"}
-          </h1>
-
-          <p className="text-gray-600 max-w-xl text-base sm:text-lg md:text-xl leading-relaxed">
-            {profile?.bio ||
-              "I help businesses make sense of their data — from cleaning messy datasets to building cloud infrastructure that scales."}
-          </p>
-        </motion.div>
-      </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

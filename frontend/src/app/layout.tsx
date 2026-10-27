@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Space_Grotesk, Caveat } from "next/font/google";
+import { Inter, Space_Grotesk, Caveat } from "next/font/google";
 import "./globals.css";
 
-const body = Plus_Jakarta_Sans({
+const body = Inter({
   variable: "--font-body",
   subsets: ["latin"],
 });
@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${body.variable} ${heading.variable} ${caveat.variable} scroll-smooth antialiased`}>
-      <body className="min-h-screen flex flex-col font-body selection:bg-accent selection:text-accent-foreground">
+      <body className="min-h-screen flex flex-col bg-canvas text-stroke font-body selection:bg-accent selection:text-white">
         {children}
       </body>
     </html>

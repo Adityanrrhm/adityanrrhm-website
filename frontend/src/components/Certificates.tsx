@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ZoomIn, ExternalLink, X } from "lucide-react";
+import { ZoomIn, X, ArrowUpRight } from "lucide-react";
 import Img from "@/components/Img";
 import { fetchAPI, wrapData } from "@/lib/api";
 import { formatDate } from "@/lib/formatDate";
@@ -36,13 +36,8 @@ function CardStack({
   const [isHovered, setIsHovered] = useState(false);
   const didDrag = useRef(false);
 
-  useEffect(() => {
-    setItems(certificates);
-  }, [certificates]);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragEnd = useCallback(
-    (certId: number, _: any, info: { offset: { x: number }; velocity: { x: number } }) => {
+    (certId: number, _: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number }; velocity: { x: number } }) => {
       if (Math.abs(info.offset.x) <= 70 && Math.abs(info.velocity.x) <= 300) return;
 
       didDrag.current = true;
@@ -79,11 +74,11 @@ function CardStack({
   return (
     <motion.div
       animate={{ rotate: isHovered ? 0 : deckAngle }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      transition={{ duration: 0.2 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="relative w-full"
-      style={{ height: 450, perspective: 800 }}
+      style={{ height: 460 }}
     >
       {items.map((cert, i) => {
         const isTop = i === 0;
@@ -116,18 +111,15 @@ function CardStack({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onDragEnd={(_, info: any) => handleDragEnd(cert.id, _, info)}
             whileDrag={{
-              scale: 1.03,
-              rotate: 4,
-              boxShadow: "0 30px 60px rgba(0,0,0,0.12)",
+              scale: 1.02,
+              rotate: 3,
               cursor: "grabbing",
-              transition: { duration: 0.1 },
             }}
             whileHover={
               isTop && !swipingId
                 ? {
-                    y: -6,
-                    boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
-                    transition: { type: "spring", stiffness: 300, damping: 20 },
+                    y: -4,
+                    transition: { duration: 0.1 },
                   }
                 : undefined
             }
@@ -136,37 +128,44 @@ function CardStack({
               if (didDrag.current) { didDrag.current = false; return; }
               if (isTop && !swipingId) handleCardClick(cert.id);
             }}
-            className="absolute inset-x-0 rounded-[12px] bg-white overflow-hidden cursor-grab select-none will-change-transform"
+            className="absolute inset-x-0 border-3 border-stroke bg-surface shadow-neo-lg overflow-hidden cursor-grab select-none will-change-transform"
             style={{
               zIndex,
               touchAction: isTop && !swipingId ? "none" : "pan-y",
               pointerEvents: isSwiping ? "none" : "auto",
-              boxShadow:
-                isTop && !isSwiping
-                  ? "0 10px 30px rgba(0,0,0,0.06)"
-                  : "0 2px 8px rgba(0,0,0,0.03)",
             }}
           >
-            <div className="h-[340px] bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-5 overflow-hidden">
+            <div className="h-[310px] bg-neutral-soft border-b-3 border-stroke flex items-center justify-center p-4 overflow-hidden relative">
               {cert.imageUrl ? (
-                <Img src={cert.imageUrl} alt={cert.title} containerClassName="w-full h-full rounded-[8px]" imgClassName="w-full h-full object-contain" />
+                <Img
+                  src={cert.imageUrl}
+                  alt={cert.title}
+                  containerClassName="w-full h-full"
+                  imgClassName="w-full h-full object-contain"
+                />
               ) : (
-                <div className="w-full h-full rounded-[8px] bg-white flex flex-col items-center justify-center p-5">
-                  <div className="w-full max-w-[140px] flex flex-col items-center gap-2.5">
-                    <div className="w-full h-px bg-gray-200" />
-                    <p className="text-[10px] font-bold text-gray-800 text-center leading-snug">{cert.title}</p>
-                    <div className="w-8 h-px bg-gray-200" />
-                    <p className="text-[8px] text-gray-500 text-center">{cert.org}</p>
-                  </div>
+                <div className="w-full h-full bg-surface border-2 border-stroke flex flex-col items-center justify-center p-4">
+                  <p className="font-heading font-black text-xs uppercase text-stroke text-center line-clamp-2">
+                    {cert.title}
+                  </p>
+                  <p className="text-[10px] text-muted font-bold uppercase mt-1">
+                    {cert.org}
+                  </p>
                 </div>
               )}
+              <div className="absolute top-2 left-2">
+                <span className="badge-neo text-[9px] py-0.5 px-1.5">
+                  {cert.category}
+                </span>
+              </div>
             </div>
-            <div className="px-4 pb-4 pt-3">
-              <h3 className="text-[13px] font-semibold text-gray-900 leading-snug line-clamp-1">
+
+            <div className="p-3.5 bg-surface">
+              <h3 className="font-heading font-black text-xs uppercase tracking-tight text-stroke leading-snug line-clamp-1">
                 {cert.title}
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">{cert.org}</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">{formatDate(cert.issuedDate)}</p>
+              <p className="text-[11px] font-bold text-muted uppercase mt-0.5 truncate">{cert.org}</p>
+              <p className="text-[10px] text-muted font-medium mt-0.5">{formatDate(cert.issuedDate)}</p>
             </div>
           </motion.div>
         );
@@ -198,13 +197,13 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
 
   if (loading) {
     return (
-      <section className="section-padding py-20 border-t border-gray-100">
+      <section className="section-padding py-16 border-t-3 border-stroke">
         <div className="animate-pulse space-y-6">
-          <div className="h-4 w-24 bg-gray-200 rounded" />
-          <div className="h-10 w-48 bg-gray-200 rounded" />
+          <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
+          <div className="h-10 w-48 border-3 border-stroke bg-neutral-soft" />
           <div className="flex gap-10 justify-center mt-10">
-            <div className="w-[260px] h-[450px] rounded-[12px] bg-gray-100" />
-            <div className="w-[260px] h-[450px] rounded-[12px] bg-gray-100" />
+            <div className="w-[260px] h-[450px] border-3 border-stroke bg-neutral-soft shadow-neo-lg" />
+            <div className="w-[260px] h-[450px] border-3 border-stroke bg-neutral-soft shadow-neo-lg" />
           </div>
         </div>
       </section>
@@ -212,49 +211,55 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
   }
 
   return (
-    <section className="section-padding py-20 border-t border-gray-100 overflow-hidden">
+    <section className="section-padding py-16 sm:py-20 border-t-3 border-stroke overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-sm text-gray-500 mb-2 uppercase tracking-widest">
+          <span className="badge-neo mb-3">
             (II) CERTIFICATIONS
-          </p>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold">Certificates.</h2>
+          </span>
+          <h2 className="font-heading font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-stroke">
+            Certificates<span className="text-accent">.</span>
+          </h2>
         </motion.div>
         {isPreview && (
           <Link
             href="/certificate"
-            className="mt-6 md:mt-0 inline-block border border-gray-200 px-6 py-2.5 rounded-full text-sm font-medium hover:bg-gray-50 transition-all active:scale-[0.97] cursor-pointer"
+            className="mt-6 md:mt-0 btn-neo-secondary text-xs py-2.5 px-5 flex items-center gap-1.5"
           >
-            View All Certificates ↗
+            <span>Semua Sertifikat</span>
+            <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
         )}
       </div>
 
-      <p className="text-sm text-gray-400 mb-10 text-center">
-        Drag the cards to browse certificates
+      <p className="text-xs sm:text-sm font-heading font-bold uppercase tracking-wider text-muted mb-10 text-center">
+        ← Geser kartu untuk menelusuri sertifikat →
       </p>
 
-      <div className="grid md:grid-cols-2 gap-6 md:gap-10 max-w-3xl mx-auto">
-        <div className="w-full max-w-[260px] mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto">
+        <div className="w-full max-w-[270px] mx-auto">
           <CardStack
+            key={`left-${displayCerts.slice(0, MID).map((c) => c.id).join("-")}`}
             certificates={displayCerts.slice(0, MID)}
-            deckAngle={-3}
+            deckAngle={-2.5}
             onCardClick={setModalCert}
           />
         </div>
-        <div className="w-full max-w-[260px] mx-auto">
+        <div className="w-full max-w-[270px] mx-auto">
           <CardStack
+            key={`right-${displayCerts.slice(MID).map((c) => c.id).join("-")}`}
             certificates={displayCerts.slice(MID)}
-            deckAngle={3}
+            deckAngle={2.5}
             onCardClick={setModalCert}
           />
         </div>
       </div>
 
+      {/* Detail Modal */}
       <AnimatePresence>
         {modalCert && (
           <motion.div
@@ -266,61 +271,64 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
               setModalCert(null);
               setZoomed(false);
             }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 md:p-8"
           >
             <motion.div
-              initial={{ scale: 0.94, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col w-full max-w-lg max-h-[90vh]"
+              className="bg-surface border-3 border-stroke shadow-neo-xl relative flex flex-col w-full max-w-lg max-h-[90vh] overflow-hidden"
             >
-              <div className="flex-1 bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-8 min-h-0 overflow-hidden">
-                {modalCert.imageUrl ? (
-                  <Img src={modalCert.imageUrl} alt={modalCert.title} containerClassName="w-full h-full rounded-[10px]" imgClassName="w-full h-full object-contain" />
-                ) : (
-                  <div className="w-full h-full max-h-full rounded-[10px] bg-white flex flex-col items-center justify-center p-8">
-                    <div className="max-w-[240px] flex flex-col items-center gap-3">
-                      <div className="w-12 h-px bg-gray-200" />
-                      <p className="text-lg font-bold text-gray-800 text-center leading-snug">{modalCert.title}</p>
-                      <div className="w-8 h-px bg-gray-200" />
-                      <p className="text-sm text-gray-500 text-center">{modalCert.org}</p>
-                      <p className="text-xs text-gray-400">{formatDate(modalCert.issuedDate)}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="px-6 py-4 flex items-center gap-3 border-t border-gray-100">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-gray-900 truncate">
-                    {modalCert.title}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    {modalCert.org} &bull; {formatDate(modalCert.issuedDate)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setZoomed(!zoomed)}
-                    className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 transition-all active:scale-[0.97] px-3 py-2 rounded-lg hover:bg-gray-50"
-                  >
-                    <ZoomIn className="w-3.5 h-3.5" />
-                    {zoomed ? "Reset" : "Zoom"}
-                  </button>
-                </div>
-              </div>
-
+              {/* Close Button */}
               <button
                 onClick={() => {
                   setModalCert(null);
                   setZoomed(false);
                 }}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-all active:scale-[0.92] shadow-sm"
+                className="absolute top-3 right-3 z-30 p-2 border-2 border-stroke bg-surface shadow-neo-sm hover:shadow-neo active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-stroke"
+                aria-label="Close modal"
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-4 h-4 stroke-[2.5]" />
               </button>
+
+              <div className="flex-1 bg-neutral-soft border-b-3 border-stroke flex items-center justify-center p-6 min-h-0 overflow-hidden">
+                {modalCert.imageUrl ? (
+                  <Img
+                    src={modalCert.imageUrl}
+                    alt={modalCert.title}
+                    containerClassName="w-full h-full"
+                    imgClassName={`w-full h-full object-contain transition-transform duration-200 ${
+                      zoomed ? "scale-125" : "scale-100"
+                    }`}
+                  />
+                ) : (
+                  <div className="w-full h-full border-2 border-stroke bg-surface flex flex-col items-center justify-center p-8 text-center">
+                    <p className="font-heading font-black text-base uppercase text-stroke mb-2">{modalCert.title}</p>
+                    <p className="text-xs font-bold text-muted uppercase">{modalCert.org}</p>
+                    <p className="text-[11px] text-muted mt-1">{formatDate(modalCert.issuedDate)}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-5 flex items-center justify-between gap-4 bg-surface">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-heading font-black text-sm uppercase text-stroke truncate">
+                    {modalCert.title}
+                  </h3>
+                  <p className="text-xs text-muted font-bold uppercase mt-0.5">
+                    {modalCert.org} &bull; {formatDate(modalCert.issuedDate)}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setZoomed(!zoomed)}
+                  className="btn-neo-secondary text-xs py-1.5 px-3 flex items-center gap-1.5"
+                >
+                  <ZoomIn className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>{zoomed ? "Reset" : "Zoom"}</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}

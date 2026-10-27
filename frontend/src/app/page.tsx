@@ -13,7 +13,7 @@ export default function Home() {
     <main className="min-h-screen overflow-x-hidden">
       <Navbar />
       
-      <div className="pt-24 pb-16">
+      <div className="py-4 sm:py-8">
         <Hero />
         <Skills />
         <Portfolio isPreview={true} />

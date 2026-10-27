@@ -7,7 +7,7 @@ export default function ExperiencePage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <div className="pt-24 pb-16">
+      <div className="py-4 sm:py-8">
         <Experience />
       </div>
 

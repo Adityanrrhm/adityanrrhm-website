@@ -21,8 +21,10 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
   useEffect(() => {
     fetchAPI<{ data: Profile }>("profile")
       .then((res) => {
-        const unwrapped = wrapData(res) as any;
-        const profileData = unwrapped?.data ? unwrapped.data : unwrapped;
+        const unwrapped = wrapData(res) as unknown as { data?: Profile } | Profile;
+        const profileData = (unwrapped as { data?: Profile })?.data
+          ? (unwrapped as { data?: Profile }).data!
+          : (unwrapped as Profile);
         setProfile(profileData);
       })
       .catch((err) => console.error("Gagal fetch profile:", err));
@@ -31,7 +33,7 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
   return (
     <section
       id="about"
-      className="section-padding py-20 border-t border-gray-100 scroll-mt-24"
+      className="section-padding py-16 sm:py-20 border-t-3 border-stroke scroll-mt-24"
     >
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -39,87 +41,88 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
         viewport={{ once: true }}
         className="mb-12"
       >
-        {isPreview && (
-          <p className="text-sm text-gray-500 mb-2 uppercase tracking-widest">
-            (III) ABOUT ME
-          </p>
-        )}
-        <h2 className="font-heading text-4xl md:text-5xl font-bold">
-          About me.
+        <span className="badge-neo mb-3">
+          {isPreview ? "(III) ABOUT ME" : "BIOGRAPHY"}
+        </span>
+        <h2 className="font-heading font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-stroke">
+          About Me<span className="text-accent">.</span>
         </h2>
         {!isPreview && (
-          <p className="text-gray-400 mt-2">
-            Learn more about my background and expertise.
+          <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
+            Latar belakang, minat teknologi, dan pendekatan saya dalam memecahkan masalah rekayasa data dan web.
           </p>
         )}
       </motion.div>
 
-      <div className="grid md:grid-cols-12 gap-12 items-center">
+      <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-center">
+        {/* Photo Box */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="md:col-span-5 flex justify-center"
         >
-          <div className="w-[260px] md:w-[320px]">
-            <div className="aspect-[4/5] rounded-3xl bg-white border-[6px] border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100" />
-              {profile?.photoUrl ? (
-                <Image
-                  src={profile.photoUrl}
-                  alt={profile.name || "Aditya Nur Rohim"}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.876 0-5.59-.205-8.107-.582Z"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-xs text-gray-400">Add your photo</p>
-                </div>
-              )}
+          <div className="w-[240px] sm:w-[280px] md:w-[320px] aspect-[4/5] border-3 border-stroke bg-neutral-soft shadow-neo-xl relative overflow-hidden flex items-end group">
+            {profile?.photoUrl ? (
+              <Image
+                src={profile.photoUrl}
+                alt={profile.name || "Aditya Nur Rohim"}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-neutral-soft">
+                <span className="font-heading font-black text-6xl text-stroke opacity-20 mb-2">
+                  ANR
+                </span>
+                <p className="text-xs font-bold text-muted uppercase">Foto Profil</p>
+              </div>
+            )}
+
+            <div className="absolute bottom-3 left-3 right-3 bg-surface border-2 border-stroke p-3 shadow-neo-sm z-10">
+              <p className="font-heading font-black text-xs uppercase tracking-wider text-stroke truncate">
+                {profile?.name || "Aditya Nur Rohim"}
+              </p>
+              <p className="text-[10px] text-muted font-bold uppercase truncate">
+                {profile?.study || "Computer Science"} &bull; {profile?.location || "Indonesia"}
+              </p>
             </div>
           </div>
         </motion.div>
 
+        {/* Bio & Info Grid */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="md:col-span-7 space-y-5"
+          className="md:col-span-7 space-y-6"
         >
-          <p className="text-lg text-gray-600 leading-relaxed">
-            {profile?.bio ||
-              "I'm a Computer Science student from Indonesia with a deep interest in Data Analytics and Web Development."}
-          </p>
+          <div className="border-3 border-stroke bg-surface p-6 sm:p-8 shadow-neo-lg">
+            <h3 className="font-heading font-black text-xl uppercase tracking-tight text-stroke mb-4">
+              Hello World!
+            </h3>
+            <p className="text-base sm:text-lg text-muted font-medium leading-relaxed">
+              {profile?.bio ||
+                "I'm a Computer Science student from Indonesia with a deep interest in Data Analytics and Web Development."}
+            </p>
+          </div>
 
-          <div className="w-12 h-px bg-gray-200 my-6" />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* Info cards in 2x2 grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: "Location", value: profile?.location || "Indonesia" },
-              { label: "Focus", value: profile?.focus || "Data & Cloud" },
-              { label: "Study", value: profile?.study || "Computer Science" },
-              { label: "Email", value: profile?.email || "business@adplay.id" },
+              { label: "Lokasi", value: profile?.location || "Indonesia" },
+              { label: "Fokus Keahlian", value: profile?.focus || "Data & Cloud" },
+              { label: "Pendidikan", value: profile?.study || "Computer Science" },
+              { label: "Email Kontak", value: profile?.email || "business@adplay.id" },
             ].map((item) => (
-              <div key={item.label}>
-                <p className="text-xs text-gray-400 uppercase tracking-wider">
+              <div
+                key={item.label}
+                className="border-2 border-stroke bg-surface shadow-neo-sm p-4 hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
+              >
+                <p className="font-heading font-bold text-[10px] uppercase tracking-wider text-muted">
                   {item.label}
                 </p>
-                <p className="text-sm text-gray-800 font-medium mt-0.5">
+                <p className="font-heading font-bold text-sm sm:text-base text-stroke mt-1 truncate">
                   {item.value}
                 </p>
               </div>
