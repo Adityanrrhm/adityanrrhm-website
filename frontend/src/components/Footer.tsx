@@ -21,7 +21,7 @@ interface SocialLink {
 
 const columns = [
   {
-    title: "Navigasi",
+    title: "Navigation",
     links: [
       { label: "Home", href: "/" },
       { label: "Projects", href: "/project" },
@@ -74,7 +74,7 @@ export default function Footer() {
 
             <p className="text-muted text-sm sm:text-base font-medium leading-relaxed max-w-sm">
               {profile?.bio ||
-                "Membangun aplikasi web berperforma tinggi dan infrastruktur data yang siap berkembang."}
+                "Building high-performance backend systems and scalable data infrastructure ready to grow."}
             </p>
           </div>
 
@@ -112,7 +112,7 @@ export default function Footer() {
 
             <div>
               <h4 className="font-heading font-black text-xs uppercase tracking-wider text-stroke mb-4">
-                Terhubung
+                Connect
               </h4>
               <div className="flex flex-wrap gap-2 max-w-xs">
                 {socialLinks.map((link) => {

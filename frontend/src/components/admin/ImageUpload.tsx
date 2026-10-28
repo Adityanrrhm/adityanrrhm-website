@@ -36,7 +36,7 @@ export default function ImageUpload({
     if (file) {
       // Pastikan ukuran di bawah 4MB, mirip batasan uploadthing
       if (file.size > 4 * 1024 * 1024) {
-        alert("File terlalu besar. Maksimal 4MB.");
+        alert("File is too large. Maximum 4MB.");
         return;
       }
       onChange(file);
@@ -62,7 +62,7 @@ export default function ImageUpload({
         className="hidden"
       />
 
-      {/* ─── Sudah ada gambar & berhasil load ─── */}
+      {/* ─── Image exists & successfully loaded ─── */}
       {previewUrl && !imgError && (
         <div className="space-y-2">
           {/* Preview */}
@@ -80,36 +80,36 @@ export default function ImageUpload({
                 {displayName}
               </p>
             </div>
-            {/* Tombol hapus */}
+            {/* Delete button */}
             <button
               type="button"
               onClick={handleRemove}
               className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all active:scale-90 z-10"
-              title="Hapus gambar"
+              title="Delete image"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Tombol ganti gambar */}
+          {/* Change image button */}
           <div className="relative max-w-xs">
             <div
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors py-2 px-3 text-xs font-medium text-gray-500 cursor-pointer relative overflow-hidden"
             >
               <ImageIcon className="w-3.5 h-3.5" />
-              <span>Ganti gambar</span>
+              <span>Change image</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── Gambar ada tapi gagal load ─── */}
+      {/* ─── Image exists but failed to load ─── */}
       {previewUrl && imgError && (
         <div className="flex flex-col items-center justify-center gap-2 w-full max-w-xs h-40 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 text-orange-400">
           <AlertCircle className="w-6 h-6" />
           <span className="text-xs text-center px-4">
-            Gambar tidak bisa dimuat
+            Image failed to load
             <br />
             <span className="text-[10px] opacity-70 break-all">{displayName}</span>
           </span>
@@ -118,12 +118,12 @@ export default function ImageUpload({
             onClick={handleRemove}
             className="text-xs underline text-orange-500 hover:text-orange-700"
           >
-            Hapus
+            Delete
           </button>
         </div>
       )}
 
-      {/* ─── Belum ada gambar — area upload ─── */}
+      {/* ─── No image yet — upload area ─── */}
       {!previewUrl && (
         <div className="relative w-full max-w-xs">
           <div
@@ -131,8 +131,8 @@ export default function ImageUpload({
             className="h-40 rounded-xl border-2 border-dashed border-gray-200 hover:border-zinc-400 bg-gray-50 hover:bg-gray-100 transition-all duration-200 flex flex-col items-center justify-center gap-2 text-gray-400 cursor-pointer relative overflow-hidden"
           >
             <ImageIcon className="w-7 h-7" />
-            <span className="text-xs font-medium">Klik untuk pilih gambar</span>
-            <span className="text-[10px] opacity-60">Maks 4MB · JPG, PNG, WebP</span>
+            <span className="text-xs font-medium">Click to select image</span>
+            <span className="text-[10px] opacity-60">Max 4MB · JPG, PNG, WebP</span>
           </div>
         </div>
       )}

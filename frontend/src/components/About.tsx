@@ -17,6 +17,7 @@ interface Profile {
 
 export default function About({ isPreview = false }: { isPreview?: boolean }) {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAPI<{ data: Profile }>("profile")
@@ -27,7 +28,8 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
           : (unwrapped as Profile);
         setProfile(profileData);
       })
-      .catch((err) => console.error("Gagal fetch profile:", err));
+      .catch((err) => console.error("Failed to fetch profile:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -49,7 +51,7 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
         </h2>
         {!isPreview && (
           <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
-            Latar belakang, minat teknologi, dan pendekatan saya dalam memecahkan masalah rekayasa data dan web.
+            My background, technology interests, and approach to solving data engineering and web challenges.
           </p>
         )}
       </motion.div>
@@ -63,7 +65,9 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
           className="md:col-span-5 flex justify-center"
         >
           <div className="w-[240px] sm:w-[280px] md:w-[320px] aspect-[4/5] border-3 border-stroke bg-neutral-soft shadow-neo-xl relative overflow-hidden flex items-end group">
-            {profile?.photoUrl ? (
+            {loading ? (
+              <div className="absolute inset-0 bg-neutral-soft animate-pulse" />
+            ) : profile?.photoUrl ? (
               <Image
                 src={profile.photoUrl}
                 alt={profile.name || "Aditya Nur Rohim"}
@@ -75,16 +79,24 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
                 <span className="font-heading font-black text-6xl text-stroke opacity-20 mb-2">
                   ANR
                 </span>
-                <p className="text-xs font-bold text-muted uppercase">Foto Profil</p>
+                <p className="text-xs font-bold text-muted uppercase">Profile Photo</p>
               </div>
             )}
 
             <div className="absolute bottom-3 left-3 right-3 bg-surface border-2 border-stroke p-3 shadow-neo-sm z-10">
               <p className="font-heading font-black text-xs uppercase tracking-wider text-stroke truncate">
-                {profile?.name || "Aditya Nur Rohim"}
+                {loading ? (
+                  <span className="block h-3.5 w-28 bg-neutral-soft animate-pulse" />
+                ) : (
+                  profile?.name || "Aditya Nur Rohim"
+                )}
               </p>
-              <p className="text-[10px] text-muted font-bold uppercase truncate">
-                {profile?.study || "Computer Science"} &bull; {profile?.location || "Indonesia"}
+              <p className="text-[10px] text-muted font-bold uppercase truncate mt-0.5">
+                {loading ? (
+                  <span className="block h-3 w-36 bg-neutral-soft animate-pulse" />
+                ) : (
+                  <>{profile?.study || "Computer Science"} &bull; {profile?.location || "Indonesia"}</>
+                )}
               </p>
             </div>
           </div>
@@ -101,19 +113,27 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
             <h3 className="font-heading font-black text-xl uppercase tracking-tight text-stroke mb-4">
               Hello World!
             </h3>
-            <p className="text-base sm:text-lg text-muted font-medium leading-relaxed">
-              {profile?.bio ||
-                "I'm a Computer Science student from Indonesia with a deep interest in Data Analytics and Web Development."}
-            </p>
+            {loading ? (
+              <div className="space-y-2">
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-full" />
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-5/6" />
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-4/6" />
+              </div>
+            ) : (
+              <p className="text-base sm:text-lg text-muted font-medium leading-relaxed">
+                {profile?.bio ||
+                  "I'm a Computer Science student from Indonesia with a deep focus on Backend Engineering and Data Analytics."}
+              </p>
+            )}
           </div>
 
           {/* Info cards in 2x2 grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: "Lokasi", value: profile?.location || "Indonesia" },
-              { label: "Fokus Keahlian", value: profile?.focus || "Data & Cloud" },
-              { label: "Pendidikan", value: profile?.study || "Computer Science" },
-              { label: "Email Kontak", value: profile?.email || "business@adplay.id" },
+              { label: "Location", value: loading ? undefined : (profile?.location || "Indonesia") },
+              { label: "Focus", value: loading ? undefined : (profile?.focus || "Backend & Data Analytics") },
+              { label: "Education", value: loading ? undefined : (profile?.study || "Computer Science") },
+              { label: "Email", value: loading ? undefined : (profile?.email || "business@adplay.id") },
             ].map((item) => (
               <div
                 key={item.label}
@@ -122,9 +142,13 @@ export default function About({ isPreview = false }: { isPreview?: boolean }) {
                 <p className="font-heading font-bold text-[10px] uppercase tracking-wider text-muted">
                   {item.label}
                 </p>
-                <p className="font-heading font-bold text-sm sm:text-base text-stroke mt-1 truncate">
-                  {item.value}
-                </p>
+                {item.value ? (
+                  <p className="font-heading font-bold text-sm sm:text-base text-stroke mt-1 truncate">
+                    {item.value}
+                  </p>
+                ) : (
+                  <div className="h-4 border-2 border-stroke bg-neutral-soft animate-pulse mt-1 w-3/4" />
+                )}
               </div>
             ))}
           </div>

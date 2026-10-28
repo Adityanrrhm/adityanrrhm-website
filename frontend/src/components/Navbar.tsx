@@ -60,15 +60,21 @@ export default function Navbar() {
 
         {/* Desktop Download CV Button */}
         <div className="hidden md:flex items-center">
-          <a
-            href={profile?.cvUrl || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-neo-primary text-xs py-2.5 px-5 flex items-center gap-2"
-          >
-            <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Download CV</span>
-          </a>
+          {profile?.cvUrl ? (
+            <a
+              href={profile.cvUrl}
+              download
+              className="btn-neo-primary text-xs py-2.5 px-5 flex items-center gap-2"
+            >
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Download CV</span>
+            </a>
+          ) : (
+            <div className="btn-neo-primary text-xs py-2.5 px-5 flex items-center gap-2 opacity-40 cursor-not-allowed pointer-events-none">
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Download CV</span>
+            </div>
+          )}
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -119,16 +125,22 @@ export default function Navbar() {
             >
               About
             </Link>
-            <a
-              href={profile?.cvUrl || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="btn-neo-primary w-full text-center text-xs py-3 mt-2 flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4 stroke-[2.5]" />
-              <span>Download CV</span>
-            </a>
+            {profile?.cvUrl ? (
+              <a
+                href={profile.cvUrl}
+                download
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="btn-neo-primary w-full text-center text-xs py-3 mt-2 flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>Download CV</span>
+              </a>
+            ) : (
+              <div className="btn-neo-primary w-full text-center text-xs py-3 mt-2 flex items-center justify-center gap-2 opacity-40 cursor-not-allowed pointer-events-none">
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>Download CV</span>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

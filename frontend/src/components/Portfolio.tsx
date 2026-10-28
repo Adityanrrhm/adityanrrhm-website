@@ -125,7 +125,7 @@ function ProjectCard({
           href="/project"
           className="btn-neo-secondary text-xs py-2 px-3 text-center w-full flex items-center justify-center gap-1.5"
         >
-          <span>Detail Proyek</span>
+          <span>Project Details</span>
           <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </Link>
       </div>
@@ -235,7 +235,7 @@ export default function Portfolio({ isPreview = false }: { isPreview?: boolean }
               href="/project"
               className="btn-neo-secondary text-xs py-2.5 px-5 flex items-center gap-1.5"
             >
-              <span>Semua Proyek</span>
+              <span>All Projects</span>
               <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </Link>
           )}
@@ -255,7 +255,7 @@ export default function Portfolio({ isPreview = false }: { isPreview?: boolean }
         </div>
       ) : items.length === 0 ? (
         <div className="max-w-md mx-auto text-center p-8 border-3 border-stroke bg-surface shadow-neo">
-          <p className="font-heading font-bold uppercase text-muted">Belum ada proyek.</p>
+          <p className="font-heading font-bold uppercase text-muted">No projects available.</p>
         </div>
       ) : (
         <>

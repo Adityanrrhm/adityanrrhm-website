@@ -198,12 +198,46 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
   if (loading) {
     return (
       <section className="section-padding py-16 border-t-3 border-stroke">
-        <div className="animate-pulse space-y-6">
-          <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
-          <div className="h-10 w-48 border-3 border-stroke bg-neutral-soft" />
-          <div className="flex gap-10 justify-center mt-10">
-            <div className="w-[260px] h-[450px] border-3 border-stroke bg-neutral-soft shadow-neo-lg" />
-            <div className="w-[260px] h-[450px] border-3 border-stroke bg-neutral-soft shadow-neo-lg" />
+        <div className="animate-pulse">
+          {/* Header skeleton */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
+            <div className="space-y-3">
+              <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
+              <div className="h-10 w-48 border-3 border-stroke bg-neutral-soft" />
+            </div>
+          </div>
+          {/* Hint text skeleton */}
+          <div className="h-4 w-64 border-2 border-stroke bg-neutral-soft mx-auto mb-10" />
+          {/* Card stacks skeleton */}
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto">
+            {[0, 1].map((i) => (
+              <div key={i} className="w-full max-w-[270px] mx-auto" style={{ height: 460 }}>
+                {/* Stacked card skeleton effect */}
+                <div className="relative" style={{ height: 460 }}>
+                  {[2, 1, 0].map((offset) => (
+                    <div
+                      key={offset}
+                      className="absolute inset-x-0 border-3 border-stroke bg-neutral-soft shadow-neo-lg overflow-hidden"
+                      style={{
+                        top: offset * 8,
+                        transform: `scale(${1 - offset * 0.03})`,
+                        transformOrigin: "top center",
+                        zIndex: 3 - offset,
+                      }}
+                    >
+                      {/* Card image area */}
+                      <div className="h-[310px] bg-neutral-soft border-b-3 border-stroke" />
+                      {/* Card info area */}
+                      <div className="p-3.5 space-y-1.5">
+                        <div className="h-3 w-3/4 bg-neutral-soft border border-stroke" />
+                        <div className="h-2.5 w-1/2 bg-neutral-soft border border-stroke" />
+                        <div className="h-2 w-1/3 bg-neutral-soft border border-stroke" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -230,14 +264,14 @@ export default function Certificates({ isPreview = false }: { isPreview?: boolea
             href="/certificate"
             className="mt-6 md:mt-0 btn-neo-secondary text-xs py-2.5 px-5 flex items-center gap-1.5"
           >
-            <span>Semua Sertifikat</span>
+            <span>All Certificates</span>
             <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
         )}
       </div>
 
       <p className="text-xs sm:text-sm font-heading font-bold uppercase tracking-wider text-muted mb-10 text-center">
-        ← Geser kartu untuk menelusuri sertifikat →
+        ← Swipe cards to browse certificates →
       </p>
 
       <div className="grid md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto">

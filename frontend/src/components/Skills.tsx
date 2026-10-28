@@ -13,22 +13,51 @@ interface Skill {
   category: string;
 }
 
+const DEFAULT_SKILLS: Skill[] = [
+  { id: 1, name: "Python", iconName: "SiPython", colorHex: "#3776AB", category: "Data Analytics" },
+  { id: 2, name: "Spring Framework", iconName: "SiSpringboot", colorHex: "#6DB33F", category: "Backend" },
+  { id: 3, name: "Laravel", iconName: "SiLaravel", colorHex: "#FF2D20", category: "Backend" },
+  { id: 4, name: "PostgreSQL", iconName: "SiPostgresql", colorHex: "#4169E1", category: "Database" },
+  { id: 5, name: "Git", iconName: "SiGit", colorHex: "#F05032", category: "DevOps" },
+  { id: 6, name: "Docker", iconName: "SiDocker", colorHex: "#2496ED", category: "DevOps" },
+  { id: 7, name: "Linux", iconName: "SiLinux", colorHex: "#FCC624", category: "DevOps" },
+  { id: 8, name: "Power BI", iconName: "PowerBI", colorHex: "#F2C811", category: "Data Analytics" },
+];
+
 export default function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAPI<{ data: Skill[] }>("skills")
       .then((res) => {
-        setSkills(wrapData(res));
+        const rawData = wrapData(res);
+        if (Array.isArray(rawData) && rawData.length > 0) {
+          // Guarantee all 8 target skills are present; overlay DB customizations if any
+          const merged = DEFAULT_SKILLS.map((def) => {
+            const found = rawData.find(
+              (r: Skill) =>
+                r.name.trim().toLowerCase() === def.name.toLowerCase() ||
+                (def.name === "Spring Framework" && r.name.toLowerCase().includes("spring"))
+            );
+            return found ? { ...def, ...found } : def;
+          });
+          setSkills(merged);
+        } else {
+          setSkills(DEFAULT_SKILLS);
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setSkills(DEFAULT_SKILLS);
+        setLoading(false);
+      });
   }, []);
 
+  const activeSkills = skills.length > 0 ? skills : DEFAULT_SKILLS;
   const MARQUEE_ITEMS = loading
     ? []
-    : [...skills, ...skills, ...skills, ...skills];
+    : [...activeSkills, ...activeSkills, ...activeSkills, ...activeSkills];
 
   return (
     <section className="flex flex-col items-center py-12 md:py-16 overflow-hidden bg-canvas relative">
@@ -90,9 +119,9 @@ export default function Skills() {
           </h2>
 
           <p className="text-base sm:text-lg text-muted leading-relaxed max-w-2xl mx-auto font-medium">
-            Berfokus pada Data Analytics dan Web Development, membangun solusi praktis
-            dan terukur untuk mendukung pengambilan keputusan berbasis data menggunakan
-            teknologi modern.
+            Focused on Backend Development and Data Analytics, building practical,
+            secure, and scalable solutions to support data-driven decision making using
+            modern technologies.
           </p>
         </div>
       </motion.div>

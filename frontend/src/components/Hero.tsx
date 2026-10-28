@@ -47,11 +47,13 @@ export default function Hero() {
                 <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Available for Hire</span>
               </span>
-              {profile?.title && (
+              {loading ? (
+                <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft animate-pulse hidden sm:block" />
+              ) : profile?.title ? (
                 <span className="badge-neo hidden sm:inline-flex">
                   {profile.title}
                 </span>
-              )}
+              ) : null}
             </div>
 
             <p className="font-handwritten text-2xl sm:text-3xl text-muted rotate-[-2deg] mb-1">
@@ -60,26 +62,46 @@ export default function Hero() {
 
             {/* Headline */}
             <h1 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase leading-[1.08] tracking-tight mb-6 text-stroke">
-              {firstName}{" "}
-              <span className="bg-accent text-white px-2.5 py-0.5 inline-block -rotate-1 shadow-neo-sm">
-                {restName || "DEVELOPER"}
-              </span>
+              {loading ? (
+                <div className="h-14 sm:h-16 md:h-20 w-72 border-3 border-stroke bg-neutral-soft animate-pulse" />
+              ) : (
+                <>
+                  {firstName}{" "}
+                  <span className="bg-accent text-white px-2.5 py-0.5 inline-block -rotate-1 shadow-neo-sm">
+                    {restName || "DEVELOPER"}
+                  </span>
+                </>
+              )}
             </h1>
 
             {/* Bio */}
-            <p className="text-muted text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl mb-8">
-              {profile?.bio ||
-                "Membangun aplikasi web berperforma tinggi dan analitik data dengan tampilan yang berani, bersih, dan fungsional."}
-            </p>
+            {loading ? (
+              <div className="space-y-2 mb-8 w-full max-w-2xl">
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-full" />
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-5/6" />
+                <div className="h-5 border-2 border-stroke bg-neutral-soft animate-pulse w-4/6" />
+              </div>
+            ) : (
+              <p className="text-muted text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl mb-8">
+                {profile?.bio ||
+                  "Building high-performance backend systems and data analytics solutions with bold, clean, and functional architecture."}
+              </p>
+            )}
 
             {/* Buttons */}
             <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-              <a href="#portfolio" className="btn-neo-primary w-full sm:w-auto gap-2">
-                <span>Lihat Karya</span>
+              <a
+                href="#portfolio"
+                className="btn-neo-primary w-full sm:w-auto gap-2"
+              >
+                <span>View My Work</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </a>
-              <Link href="/about" className="btn-neo-secondary w-full sm:w-auto">
-                Tentang Saya
+              <Link
+                href="/about"
+                className="btn-neo-secondary w-full sm:w-auto"
+              >
+                About Me
               </Link>
             </div>
           </div>
@@ -114,7 +136,7 @@ export default function Hero() {
                     {profile?.name || "Aditya Nur Rohim"}
                   </p>
                   <p className="text-[11px] text-muted font-bold uppercase truncate">
-                    {profile?.title || "Data Analytics & Web Developer"}
+                    {profile?.title || "Backend Developer & Data Analytics"}
                   </p>
                 </div>
               </div>

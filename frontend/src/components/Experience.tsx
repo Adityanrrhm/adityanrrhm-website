@@ -70,7 +70,7 @@ export default function Experience({
           </h2>
           {!isPreview && (
             <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
-              Rekam jejak pengalaman kerja, kontribusi profesional, dan keahlian yang telah diasah.
+              A record of my work experience, professional contributions, and skills developed over time.
             </p>
           )}
         </motion.div>
@@ -86,7 +86,7 @@ export default function Experience({
               href="/experience"
               className="btn-neo-secondary text-xs py-2.5 px-5 flex items-center gap-1.5"
             >
-              <span>Semua Pengalaman</span>
+              <span>All Experience</span>
               <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </Link>
           )}
@@ -94,18 +94,36 @@ export default function Experience({
       </div>
 
       {loading ? (
-        <div className="animate-pulse space-y-8 max-w-4xl mx-auto">
+        <div className="space-y-8 max-w-4xl mx-auto">
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="h-64 border-3 border-stroke bg-neutral-soft shadow-neo-lg"
-            />
+              className="border-3 border-stroke bg-surface shadow-neo-lg p-6 sm:p-8 animate-pulse"
+            >
+              {/* Header skeleton */}
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b-2 border-neutral-soft mb-6">
+                <div className="space-y-2">
+                  <div className="h-6 w-48 border-2 border-stroke bg-neutral-soft" />
+                  <div className="h-4 w-32 border-2 border-stroke bg-neutral-soft" />
+                </div>
+                <div className="h-6 w-28 border-2 border-stroke bg-neutral-soft shrink-0" />
+              </div>
+              {/* Points skeleton */}
+              <div className="space-y-3 mb-6">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-neutral-soft border border-stroke mt-2 shrink-0" />
+                    <div className="h-4 bg-neutral-soft border-2 border-stroke w-full" />
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       ) : displayExperiences.length === 0 ? (
         <div className="p-12 border-3 border-stroke bg-surface shadow-neo text-center max-w-md mx-auto my-12">
           <p className="font-heading font-bold uppercase text-muted">
-            Belum ada data pengalaman.
+            No experience data available.
           </p>
         </div>
       ) : (
@@ -149,7 +167,7 @@ export default function Experience({
                 <div className="sm:text-right shrink-0">
                   <span className="badge-neo text-[11px] py-1 px-2.5">
                     {formatPeriod(exp.periodStart)} —{" "}
-                    {exp.periodEnd ? formatPeriod(exp.periodEnd) : "SEKARANG"}
+                    {exp.periodEnd ? formatPeriod(exp.periodEnd) : "PRESENT"}
                   </span>
                 </div>
               </div>
@@ -170,7 +188,7 @@ export default function Experience({
               {exp.imageUrls.length > 0 && (
                 <div className="pt-4 border-t-2 border-neutral-soft">
                   <p className="font-heading font-bold text-xs uppercase tracking-wider text-muted mb-3">
-                    Dokumentasi & Bukti Kerja:
+                    Documentation & Work Evidence:
                   </p>
                   <div className="flex gap-4 flex-wrap">
                     {exp.imageUrls.map((url, i) => (
@@ -188,7 +206,7 @@ export default function Experience({
                         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <span className="badge-neo text-[10px] py-0.5 px-1.5 flex items-center gap-1">
                             <ZoomIn className="w-3 h-3" />
-                            <span>Lihat</span>
+                            <span>View</span>
                           </span>
                         </div>
                       </div>

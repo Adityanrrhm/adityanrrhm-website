@@ -22,11 +22,11 @@ export default function NotFound() {
         </h1>
 
         <p className="font-heading font-black text-xl uppercase tracking-tight text-stroke mb-3">
-          Halaman Tidak Ditemukan
+          Page Not Found
         </p>
 
         <p className="text-muted text-sm sm:text-base font-medium mb-8 leading-relaxed">
-          Halaman yang Anda tuju mungkin telah dipindahkan, dihapus, atau tautan yang Anda masukkan salah.
+          The page you&apos;re looking for may have been moved, deleted, or the link you entered is incorrect.
         </p>
 
         <Link
@@ -34,7 +34,7 @@ export default function NotFound() {
           className="btn-neo-primary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2"
         >
           <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
-          <span>Kembali ke Beranda</span>
+          <span>Back to Home</span>
         </Link>
       </motion.div>
     </div>

@@ -152,10 +152,10 @@ export default function AdminSkills() {
             </div>
             <div className="space-y-4">
               <Input label="Name" value={editing.name} onChange={v => setEditing(p => ({ ...p, name: v }))} required />
-              <Input label="Icon Name" value={editing.iconName} onChange={v => setEditing(p => ({ ...p, iconName: v }))} required placeholder="e.g. SiPython, FaAws" />
+              <Input label="Icon Name" value={editing.iconName} onChange={v => setEditing(p => ({ ...p, iconName: v }))} required placeholder="e.g. SiPython, SiLaravel, SiSpringboot" />
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Color Hex" value={editing.colorHex} onChange={v => setEditing(p => ({ ...p, colorHex: v }))} placeholder="e.g. #3776AB" />
-                <Input label="Category" value={editing.category} onChange={v => setEditing(p => ({ ...p, category: v }))} required placeholder="Data, Cloud, DevOps" />
+                <Input label="Category" value={editing.category} onChange={v => setEditing(p => ({ ...p, category: v }))} required placeholder="Backend, Data Analytics, DevOps" />
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-6 pt-4 border-t">

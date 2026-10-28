@@ -110,7 +110,7 @@ const CertificateCard = memo(function CertificateCard({
         </p>
 
         <div className="btn-neo-secondary text-xs py-1.5 px-3 text-center w-full flex items-center justify-center gap-1.5 mt-auto">
-          <span>Detail Sertifikat</span>
+          <span>Certificate Details</span>
           <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </div>
       </div>
@@ -208,7 +208,7 @@ function CertificateModal({
             <div className="space-y-4 mb-6">
               <div className="p-3 border-2 border-stroke bg-neutral-soft">
                 <p className="font-heading font-bold text-[10px] uppercase tracking-wider text-muted">
-                  Tanggal Terbit:
+                  Issue Date:
                 </p>
                 <p className="font-heading font-bold text-xs uppercase text-stroke mt-0.5">
                   {formatDate(cert.issuedDate)}
@@ -218,7 +218,7 @@ function CertificateModal({
               {cert.description && (
                 <div>
                   <p className="font-heading font-bold text-xs uppercase tracking-wider text-stroke mb-1.5">
-                    Deskripsi:
+                    Description:
                   </p>
                   <p className="text-muted text-sm leading-relaxed font-medium">
                     {cert.description}
@@ -234,7 +234,7 @@ function CertificateModal({
               className="btn-neo-secondary text-xs py-2 px-4 flex items-center gap-1.5"
             >
               <ZoomIn className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>{zoomed ? "Reset Tampilan" : "Perbesar Gambar"}</span>
+              <span>{zoomed ? "Reset View" : "Zoom In"}</span>
             </button>
           </div>
         </div>
@@ -314,14 +314,33 @@ export default function CertificatesPage() {
     return (
       <section className="section-padding py-16">
         <div className="animate-pulse space-y-6">
-          <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
-          <div className="h-12 w-64 border-3 border-stroke bg-neutral-soft" />
-          <div className="flex gap-6 mt-10 overflow-hidden">
+          {/* Header skeleton */}
+          <div className="h-6 w-40 border-2 border-stroke bg-neutral-soft" />
+          <div className="h-14 w-80 border-3 border-stroke bg-neutral-soft" />
+          <div className="h-5 w-96 border-2 border-stroke bg-neutral-soft" />
+          {/* Filter badges skeleton */}
+          <div className="flex gap-2.5 mt-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-7 w-20 border-2 border-stroke bg-neutral-soft" />
+            ))}
+          </div>
+          {/* Cards skeleton */}
+          <div className="flex gap-6 mt-6 overflow-hidden">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="shrink-0 w-[360px] h-[480px] border-3 border-stroke bg-neutral-soft shadow-neo-lg"
-              />
+                className="shrink-0 w-[320px] sm:w-[360px] h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col"
+              >
+                {/* Image area */}
+                <div className="flex-1 bg-neutral-soft border-2 border-stroke mb-4" />
+                {/* Info area */}
+                <div className="space-y-2">
+                  <div className="h-4 w-3/4 bg-neutral-soft border-2 border-stroke" />
+                  <div className="h-3 w-1/2 bg-neutral-soft border-2 border-stroke" />
+                  <div className="h-3 w-1/3 bg-neutral-soft border-2 border-stroke" />
+                  <div className="h-8 w-full bg-neutral-soft border-2 border-stroke mt-2" />
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -343,7 +362,7 @@ export default function CertificatesPage() {
           All Certificates<span className="text-accent">.</span>
         </h1>
         <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
-          Dokumentasi sertifikasi keahlian profesional dalam bidang data analytics, cloud, dan pengembangan sistem.
+          Documentation of professional skill certifications in data analytics, cloud, and system development.
         </p>
       </motion.div>
 

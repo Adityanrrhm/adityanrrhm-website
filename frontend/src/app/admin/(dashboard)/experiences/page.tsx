@@ -291,11 +291,11 @@ export default function AdminExperiences() {
                 <textarea value={editing.points.join("\n")} onChange={e => setEditing(p => ({ ...p, points: e.target.value.split("\n").filter(Boolean) }))} rows={5} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10" placeholder="Describe responsibilities, one per line" />
               </div>
 
-              {/* Foto Dokumentasi 1 */}
+              {/* Documentation Photo 1 */}
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-1">
-                  Dokumentasi 1
-                  <span className="text-xs text-gray-400 font-normal ml-1">(opsional)</span>
+                  Documentation 1
+                  <span className="text-xs text-gray-400 font-normal ml-1">(optional)</span>
                 </label>
                 <ImageUpload
                   value={editing.imageUrls[0] || ""}
@@ -311,11 +311,11 @@ export default function AdminExperiences() {
                 />
               </div>
 
-              {/* Foto Dokumentasi 2 */}
+              {/* Documentation Photo 2 */}
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-1">
-                  Dokumentasi 2
-                  <span className="text-xs text-gray-400 font-normal ml-1">(opsional)</span>
+                  Documentation 2
+                  <span className="text-xs text-gray-400 font-normal ml-1">(optional)</span>
                 </label>
                 <ImageUpload
                   value={editing.imageUrls[1] || ""}

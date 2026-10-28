@@ -69,7 +69,7 @@ export default function CTA() {
         </h2>
 
         <p className="text-muted text-base sm:text-lg max-w-xl mx-auto mb-8 font-medium leading-relaxed">
-          Tertarik untuk berkolaborasi, mendiskusikan rekayasa data, arsitektur cloud, atau pengembangan produk web? Mari terhubung.
+          Interested in collaborating, discussing data engineering, cloud architecture, or web product development? Let&apos;s connect.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -78,7 +78,7 @@ export default function CTA() {
             className="btn-neo-primary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2.5"
           >
             {copied ? <Check className="w-4 h-4 stroke-[2.5]" /> : <Copy className="w-4 h-4 stroke-[2.5]" />}
-            <span>{copied ? "Email Tersalin!" : email}</span>
+            <span>{copied ? "Copied!" : email}</span>
           </button>
 
           <a
@@ -88,7 +88,7 @@ export default function CTA() {
             className="btn-neo-secondary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2.5"
           >
             <ExternalLink className="w-4 h-4 stroke-[2.5]" />
-            <span>Lihat Profil LinkedIn</span>
+            <span>LinkedIn Profile</span>
           </a>
         </div>
       </motion.div>

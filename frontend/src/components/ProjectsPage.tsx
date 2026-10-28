@@ -90,7 +90,7 @@ function ProjectCard({
 
         {/* Action Button */}
         <div className="btn-neo-secondary text-xs py-2 px-3 text-center w-full flex items-center justify-center gap-1.5 mt-auto">
-          <span>Detail Proyek</span>
+          <span>Project Details</span>
           <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </div>
       </div>
@@ -194,10 +194,7 @@ function ProjectModal({
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {project.techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="badge-neo text-xs py-1 px-2.5"
-                  >
+                  <span key={tech} className="badge-neo text-xs py-1 px-2.5">
                     {tech}
                   </span>
                 ))}
@@ -228,7 +225,9 @@ function ProjectModal({
                 }`}
               >
                 <GitBranch className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>{project.isPrivate ? "Private Repo" : "Source Code"}</span>
+                <span>
+                  {project.isPrivate ? "Private Repo" : "Source Code"}
+                </span>
               </a>
             )}
           </div>
@@ -253,7 +252,10 @@ export default function ProjectsPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const labels = [ALL_LABEL, ...new Set(projects.map((p) => p.label).filter(Boolean))];
+  const labels = [
+    ALL_LABEL,
+    ...new Set(projects.map((p) => p.label).filter(Boolean)),
+  ];
 
   const filtered =
     activeLabel === ALL_LABEL
@@ -264,11 +266,47 @@ export default function ProjectsPage() {
     return (
       <section className="section-padding py-16">
         <div className="animate-pulse space-y-6">
-          <div className="h-6 w-32 border-2 border-stroke bg-neutral-soft" />
-          <div className="h-12 w-64 border-3 border-stroke bg-neutral-soft" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+          {/* Header skeleton */}
+          <div className="h-6 w-40 border-2 border-stroke bg-neutral-soft" />
+          <div className="h-14 w-72 border-3 border-stroke bg-neutral-soft" />
+          <div className="h-5 w-96 border-2 border-stroke bg-neutral-soft" />
+          {/* Filter badges skeleton */}
+          <div className="flex gap-2.5 mt-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-7 w-20 border-2 border-stroke bg-neutral-soft"
+              />
+            ))}
+          </div>
+          {/* Cards grid skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-96 border-3 border-stroke bg-neutral-soft shadow-neo-lg" />
+              <div
+                key={i}
+                className="border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col"
+              >
+                {/* Image area */}
+                <div className="w-full h-48 bg-neutral-soft border-2 border-stroke mb-4" />
+                {/* Info */}
+                <div className="space-y-2 flex-1">
+                  <div className="h-3 w-20 bg-neutral-soft border border-stroke" />
+                  <div className="h-5 w-3/4 bg-neutral-soft border-2 border-stroke" />
+                  <div className="h-4 w-full bg-neutral-soft border border-stroke" />
+                  <div className="h-4 w-5/6 bg-neutral-soft border border-stroke" />
+                  {/* Tech badges */}
+                  <div className="flex gap-1.5 pt-1">
+                    {[1, 2, 3].map((j) => (
+                      <div
+                        key={j}
+                        className="h-5 w-14 bg-neutral-soft border border-stroke"
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Button */}
+                <div className="h-9 w-full bg-neutral-soft border-2 border-stroke mt-4" />
+              </div>
             ))}
           </div>
         </div>
@@ -290,7 +328,8 @@ export default function ProjectsPage() {
           All Projects<span className="text-accent">.</span>
         </h1>
         <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
-          Koleksi proyek terpilih yang mencakup web applications, machine learning, data engineering, dan cloud architecture.
+          A curated collection of projects spanning web applications, machine
+          learning, data engineering, and cloud architecture.
         </p>
       </motion.div>
 
@@ -307,7 +346,9 @@ export default function ProjectsPage() {
               key={label}
               onClick={() => setActiveLabel(label)}
               className={`badge-neo cursor-pointer transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-                isActive ? "badge-neo-active shadow-neo" : "bg-surface hover:bg-neutral-soft"
+                isActive
+                  ? "badge-neo-active shadow-neo"
+                  : "bg-surface hover:bg-neutral-soft"
               }`}
             >
               <span>{label}</span>
@@ -333,7 +374,7 @@ export default function ProjectsPage() {
       {filtered.length === 0 && (
         <div className="p-12 border-3 border-stroke bg-surface shadow-neo text-center max-w-md mx-auto my-12">
           <p className="font-heading font-bold uppercase text-muted">
-            Tidak ada proyek dalam kategori ini.
+            No projects in this category.
           </p>
         </div>
       )}
