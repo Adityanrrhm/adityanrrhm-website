@@ -23,53 +23,56 @@ interface Certificate {
   imageUrl: string | null;
 }
 
-const CARD_W = 360;
 const GAP = 28;
-const STEP = CARD_W + GAP;
 
 const CertificateCard = memo(function CertificateCard({
   cert,
   cardIndex,
   carouselX,
+  cardWidth,
+  step,
   onSelect,
 }: {
   cert: Certificate;
   cardIndex: number;
   carouselX: ReturnType<typeof useMotionValue<number>>;
+  cardWidth: number;
+  step: number;
   onSelect: (cert: Certificate) => void;
 }) {
-  const dist = useTransform(() => {
-    return Math.abs(carouselX.get() + cardIndex * STEP);
+  const dist = useTransform(carouselX, (x) => {
+    return Math.abs(x + cardIndex * step);
   });
 
   const cardScale = useTransform(dist, (d) => {
     if (d < 60) return 1;
-    if (d < STEP) return 1 - (1 - 0.88) * ((d - 60) / (STEP - 60));
+    if (d < step) return 1 - (1 - 0.88) * ((d - 60) / (step - 60));
     return 0.88;
   });
 
   const cardOpacity = useTransform(dist, (d) => {
     if (d < 80) return 1;
-    if (d < STEP * 1.2) return 0.75;
+    if (d < step * 1.2) return 0.75;
     return 0.15;
   });
 
   const cardZ = useTransform(dist, (d) => {
     if (d < 60) return 3;
-    if (d < STEP) return 2;
+    if (d < step) return 2;
     return 1;
   });
 
   return (
     <motion.div
       style={{
+        width: cardWidth,
         scale: cardScale,
         opacity: cardOpacity,
         zIndex: cardZ,
       }}
       whileHover={{ y: -6, transition: { duration: 0.15 } }}
       onClick={() => onSelect(cert)}
-      className="shrink-0 w-[320px] sm:w-[360px] h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col cursor-pointer select-none will-change-transform group"
+      className="shrink-0 h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col cursor-pointer select-none will-change-transform group"
     >
       {/* Certificate Image Box */}
       <div className="flex-1 bg-neutral-soft border-2 border-stroke relative overflow-hidden flex items-center justify-center p-3 mb-4">
@@ -251,6 +254,24 @@ export default function CertificatesPage() {
   const [loading, setLoading] = useState(true);
   const carouselX = useMotionValue(0);
 
+  const [cardWidth, setCardWidth] = useState(360);
+  const step = cardWidth + GAP;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 480) {
+        setCardWidth(Math.min(290, window.innerWidth - 48));
+      } else if (window.innerWidth < 768) {
+        setCardWidth(320);
+      } else {
+        setCardWidth(360);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     fetchAPI<{ data: Certificate[] }>("certificates")
       .then((res) => {
@@ -281,7 +302,7 @@ export default function CertificatesPage() {
   const goTo = useCallback(
     (i: number) => {
       const idx = Math.max(0, Math.min(i, maxIdx));
-      animate(carouselX, -idx * STEP, {
+      animate(carouselX, -idx * step, {
         type: "spring",
         stiffness: 300,
         damping: 28,
@@ -289,16 +310,16 @@ export default function CertificatesPage() {
       });
       setIndex(idx);
     },
-    [maxIdx, carouselX],
+    [maxIdx, carouselX, step],
   );
 
   const handleDragEnd = useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number }; velocity: { x: number } }) => {
       const current = carouselX.get();
-      const rawIdx = Math.round(-current / STEP);
+      const rawIdx = Math.round(-current / step);
       const clampedIdx = Math.max(0, Math.min(rawIdx, maxIdx));
 
-      animate(carouselX, -clampedIdx * STEP, {
+      animate(carouselX, -clampedIdx * step, {
         type: "spring",
         velocity: info.velocity.x,
         stiffness: 320,
@@ -307,13 +328,17 @@ export default function CertificatesPage() {
       });
       setIndex(clampedIdx);
     },
-    [maxIdx, carouselX],
+    [maxIdx, carouselX, step],
   );
+
+  useEffect(() => {
+    carouselX.set(-index * step);
+  }, [cardWidth, index, step, carouselX]);
 
   if (loading) {
     return (
-      <section className="section-padding py-16">
-        <div className="animate-pulse space-y-6">
+      <section className="py-12 sm:py-16 overflow-hidden">
+        <div className="px-4 sm:px-6 md:px-12 max-w-7xl mx-auto animate-pulse space-y-6">
           {/* Header skeleton */}
           <div className="h-6 w-40 border-2 border-stroke bg-neutral-soft" />
           <div className="h-14 w-80 border-3 border-stroke bg-neutral-soft" />
@@ -321,19 +346,22 @@ export default function CertificatesPage() {
           {/* Filter badges skeleton */}
           <div className="flex gap-2.5 mt-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-7 w-20 border-2 border-stroke bg-neutral-soft" />
+              <div
+                key={i}
+                className="h-7 w-20 border-2 border-stroke bg-neutral-soft"
+              />
             ))}
           </div>
-          {/* Cards skeleton */}
-          <div className="flex gap-6 mt-6 overflow-hidden">
+        </div>
+        {/* Cards skeleton carousel */}
+        <div className="flex justify-center px-4 mt-8">
+          <div className="animate-pulse flex gap-6 overflow-hidden">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="shrink-0 w-[320px] sm:w-[360px] h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col"
+                className="shrink-0 w-[290px] sm:w-[320px] md:w-[360px] h-[460px] sm:h-[480px] border-3 border-stroke bg-surface shadow-neo-lg p-5 flex flex-col"
               >
-                {/* Image area */}
                 <div className="flex-1 bg-neutral-soft border-2 border-stroke mb-4" />
-                {/* Info area */}
                 <div className="space-y-2">
                   <div className="h-4 w-3/4 bg-neutral-soft border-2 border-stroke" />
                   <div className="h-3 w-1/2 bg-neutral-soft border-2 border-stroke" />
@@ -349,56 +377,60 @@ export default function CertificatesPage() {
   }
 
   return (
-    <section className="section-padding py-12 sm:py-16 overflow-hidden">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        className="mb-8"
-      >
-        <span className="badge-neo mb-3">CREDENTIALS ARCHIVE</span>
-        <h1 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stroke">
-          All Certificates<span className="text-accent">.</span>
-        </h1>
-        <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
-          Documentation of professional skill certifications in data analytics, cloud, and system development.
-        </p>
-      </motion.div>
+    <section className="py-12 sm:py-16 overflow-hidden">
+      {/* Header Container */}
+      <div className="px-4 sm:px-6 md:px-12 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="mb-8"
+        >
+          <span className="badge-neo mb-3">CREDENTIALS ARCHIVE</span>
+          <h1 className="font-heading font-black text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stroke">
+            All Certificates<span className="text-accent">.</span>
+          </h1>
+          <p className="text-muted text-base sm:text-lg font-medium mt-2 max-w-2xl">
+            Documentation of professional skill certifications in data analytics, cloud, and system development.
+          </p>
+        </motion.div>
 
-      {/* Categories */}
-      <div className="flex flex-wrap gap-2.5 mb-10 mt-6">
-        {categories.map((cat) => {
-          const count =
-            cat === "All"
-              ? certificates.length
-              : certificates.filter((c) => c.category === cat).length;
-          const isActive = activeCategory === cat;
-          return (
-            <button
-              key={cat}
-              onClick={() => handleCategoryChange(cat)}
-              className={`badge-neo cursor-pointer transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-                isActive ? "badge-neo-active shadow-neo" : "bg-surface hover:bg-neutral-soft"
-              }`}
-            >
-              <span>{cat}</span>
-              <span className="ml-1.5 opacity-75">({count})</span>
-            </button>
-          );
-        })}
+        {/* Categories */}
+        <div className="flex flex-wrap gap-2.5 mb-10 mt-6">
+          {categories.map((cat) => {
+            const count =
+              cat === "All"
+                ? certificates.length
+                : certificates.filter((c) => c.category === cat).length;
+            const isActive = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`badge-neo cursor-pointer transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+                  isActive
+                    ? "badge-neo-active shadow-neo"
+                    : "bg-surface hover:bg-neutral-soft"
+                }`}
+              >
+                <span>{cat}</span>
+                <span className="ml-1.5 opacity-75">({count})</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Carousel */}
-      <div className="relative select-none py-4">
+      {/* Full-width Centered Carousel */}
+      <div className="overflow-hidden w-full py-4 select-none">
         <motion.div
           className="flex items-center"
           drag="x"
           style={{
             x: carouselX,
             gap: GAP,
-            paddingLeft: `calc(50% - ${CARD_W / 2}px)`,
-            paddingRight: `calc(50% - ${CARD_W / 2}px)`,
+            paddingLeft: `calc(50% - ${cardWidth / 2}px)`,
+            paddingRight: `calc(50% - ${cardWidth / 2}px)`,
           }}
           dragElastic={0.08}
           onDragEnd={handleDragEnd}
@@ -409,6 +441,8 @@ export default function CertificatesPage() {
               cert={cert}
               cardIndex={i}
               carouselX={carouselX}
+              cardWidth={cardWidth}
+              step={step}
               onSelect={setSelectedCert}
             />
           ))}
@@ -432,7 +466,9 @@ export default function CertificatesPage() {
               key={i}
               onClick={() => goTo(i)}
               className={`border border-stroke transition-all duration-200 cursor-pointer ${
-                i === index ? "bg-accent w-8 h-3 shadow-neo-sm" : "bg-neutral-soft w-3 h-3 hover:bg-surface"
+                i === index
+                  ? "bg-accent w-8 h-3 shadow-neo-sm"
+                  : "bg-neutral-soft w-3 h-3 hover:bg-surface"
               }`}
               aria-label={`Go to certificate ${i + 1}`}
             />

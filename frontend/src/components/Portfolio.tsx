@@ -147,7 +147,7 @@ export default function Portfolio({ isPreview = false }: { isPreview?: boolean }
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 480) {
-        setCardWidth(290);
+        setCardWidth(Math.min(290, window.innerWidth - 48));
       } else if (window.innerWidth < 768) {
         setCardWidth(320);
       } else {
